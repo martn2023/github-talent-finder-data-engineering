@@ -1,24 +1,40 @@
-from config import youtube_api_key #coming in as a string value
-import urllib.parse # need this to get rid of spaces in keyword terms so urls will be in valid format
+import urllib.parse
+from config import youtube_api_key  # coming in as a string value
+from search_config import searched_keyword_string, start_date_and_time, time_window_hours, maximum_results_per_json
 
 
-#TEMPORARY VARIABLES
-searched_keyword_string = "Taylor Swift"
-max_results_integer = 50 # Google's default 25, but ChatGPT claims it can be 50
+start_date_and_time_str = start_date_and_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
+end_date_and_time = start_date_and_time + time_window_hours
+end_date_and_time_str = end_date_and_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-# This came from https://developers.google.com/youtube/v3/docs/search/list
-api_base_url = "https://www.googleapis.com/youtube/v3/search"
+# pulled from https://developers.google.com/youtube/v3/docs/search/list
+api_base_url = 'https://www.googleapis.com/youtube/v3/search'
 
-# This is the part of the snippet a.k.a. the fields we want to GET
-part_url = "?part=snippet"
+# Define the parameters as a dictionary
+params = {
+    'part': 'snippet',  # The fields we want to retrieve
+    'q': searched_keyword_string,  # The search term from search_config.py
+    'maxResults': maximum_results_per_json,
+    'type': 'video',  # This will pull both normal videos and shorts; YT does not explicitly label shorts but it might be inferred by length + aspect ratio later
+    'publishedAfter': start_date_and_time_str,  # Start date from search_config.py
+    'publishedBefore': end_date_and_time_str,  # End date is start date + time window
+    'order': 'viewCount',  # could have been by view count, upload data
+    'key': youtube_api_key  # API key from config.py
+}
 
-query_url = "&" + "q=" + urllib.parse.quote(searched_keyword_string)
+encoded_params = urllib.parse.urlencode(params) # this will encode the variables into a workable URL e.g. converting spaces in keyword term
+api_call_final_url = f"{api_base_url}?{encoded_params}"
 
-max_results_url = s"&" + "maxResults=" + str(max_results_integer)
+print("final url")
+print(api_call_final_url)
 
-api_key_url = "&" + "key=" + youtube_api_key
+# Send the request to YouTube API
+#response = requests.get(api_base_url, params=params)
 
-final_api_url = api_base_url + part_url + query_url + max_results_url + api_key_url
+# Print the constructed URL for verification
+print("Constructed URL:")
+#print(response.url)
 
-print(final_api_url)
+# Print the JSON response from the API
+#print("API Response:", response.json())
