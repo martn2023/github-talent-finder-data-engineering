@@ -54,7 +54,7 @@ After building out 3 CRUD web apps, I wanted to expand my horizons. I just finis
   - Volume of videos throughout the day
 
 #### 7. Findings:
-  - 80% of videos go up during only 25% of the day: 11:00 to 14:00 EST and 21:00 to 00:00 EST
+  - 80% of videos go up during only 25% of the day: 11:00 to 14:00 EST and 21:00 to 00:00 EST **WARNING: HYPOTHETICAL PLACEHOLDER VALUES**
     - Keep in mind that YouTube is a North American company and that people in other time zones have local alternatives
     - I wonder if this is because these times are when content creators are done with their daytime work, if they're deliberately dropping videos when their AUDIENCE is done with dinner
   - Donald Trump and Kamala Harris, the 2 nominees for this election get their share of both positive and negative video titles/headlines. However, that changes dramatically when we filter for "mainstream media channels", which I define as major news outlets based in the USA that are in the top 20 of most visited news web sites. When only focusing on major news outlets: the % of opinionated video titles that are positive: **WARNING: HYPOTHETICAL PLACEHOLDER VALUES**
