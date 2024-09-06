@@ -1,5 +1,3 @@
-import json
-import os
 from config import github_pat  # imported as string format
 import requests
 
@@ -15,13 +13,13 @@ headers = {
 def get_filtered_repos(max_results=500):
     print("get_filtered_repos started", "max results:", max_results)
 
-
     # Search query parameters
     push_time_range = 'pushed:2024-09-01T00:00:00..2024-09-01T00:01:00'
     visibility = 'is:public'
+    no_forks = '-fork:true'
 
     # Combine query parameters
-    query = f'{push_time_range} {visibility}'
+    query = f'{push_time_range} {visibility} {no_forks}'
 
     repos = []
     page = 1
@@ -29,11 +27,16 @@ def get_filtered_repos(max_results=500):
 
     while len(repos) < max_results:
         print("loop iteration starting")
-        # GitHub search API for repositories
-        url = f"{BASE_URL}/search/repositories?q={query}&repos_per_page={repos_per_page}&page={page}"
-        print(f"url created: {url}")
 
-        response = requests.get(url, headers=headers)
+        # GitHub search API for repositories
+        params = {
+            'q': query,  # Combined query parameters
+            'per_page': repos_per_page,  # Correct API parameter
+            'page': page
+        }
+
+        response = requests.get(f"{BASE_URL}/search/repositories", headers=headers, params=params)
+        print(f"url created: {response.url}")
 
         if response.status_code == 200:
             print("some response found!")
@@ -62,27 +65,14 @@ def get_filtered_repos(max_results=500):
     return repos
 
 
-'''
-def save_to_json(data):
-    """Save the fetched repositories to a JSON file in the specified folder"""
-    directory = "sample_data_pulls_github_api"
-    if not os.path.exists(directory):
-        os.makedirs(directory)  # Create directory if it doesn't exist
-    file_path = os.path.join(directory, 'repos_results.json')
-
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)
-    print(f"Results saved to {file_path}")
-
-'''
-
 filtered_repos = get_filtered_repos(max_results=500)
 
 if filtered_repos:
-    #save_to_json(filtered_repos)
     for single_repo in filtered_repos:
-        print(
-            f"Repository: {single_repo['name']}, Stars: {single_repo['stargazers_count']}, Updated At: {single_repo['updated_at']}")
-
+        repo_name = single_repo['name']
+        owner_login = single_repo['owner']['login']
+        stars = single_repo['stargazers_count']
+        updated_at = single_repo['updated_at']
+        print(f"Repository: {repo_name}, Author: {owner_login}, Stars: {stars}, Updated At: {updated_at}")
 else:
     print("never saw filtered repos")
