@@ -21,18 +21,18 @@ def get_filtered_repos(max_results=500):
     # Combine query parameters
     query = f'{push_time_range} {visibility} {no_forks}'
 
-    repos = []
-    page = 1
-    repos_per_page = 100  # Number of repositories per page
+    fetched_repos_array = []
+    page_number = 1
+    fetched_repos_array_per_page = 100  # Number of fetched_repos_arrayitories per page
 
-    while len(repos) < max_results:
-        print(f"loop iteration starting, and this is LENGTH OF REPOS: {len(repos)} vs max {max_results} ")
+    while len(fetched_repos_array) < max_results:
+        print(f"loop iteration starting, and this is LENGTH OF REPOS: {len(fetched_repos_array)} vs max {max_results} ")
 
-        # GitHub Search API for repositories
+        # GitHub Search API for fetched_repos_arrayitories
         params = {
             'q': query,  # Combined query parameters
-            'per_page': repos_per_page,  # per_page is a term set by GitHub's team, repos_per_page is my custom term
-            'page': page
+            'per_page': fetched_repos_array_per_page,  # per_page is a term set by GitHub's team, fetched_repos_array_per_page is my custom term
+            'page': page_number # page_number came from me, and page came from GitHub Search API's design
         }
 
         response = requests.get(f"{BASE_URL}/search/repositories", headers=headers, params=params)
@@ -46,33 +46,47 @@ def get_filtered_repos(max_results=500):
             print(f"Total number of repositories: {total_count}")
 
             items = result.get('items', [])
-            repos.extend(items)
+            fetched_repos_array.extend(items)
 
-            if len(repos) >= max_results:
+            if len(fetched_repos_array) >= max_results:
                 # Trim the list to max_results and stop fetching
-                repos = repos[:max_results]
+                fetched_repos_array = fetched_repos_array[:max_results]
                 break
 
             # Check if we've reached the end (fewer results than requested per page)
-            if len(items) < repos_per_page:
+            if len(items) < fetched_repos_array_per_page:
                 break
         else:
-            print(f"Failed to fetch repos: {response.status_code}, {response.text}")
+            print(f"Failed to fetch fetched_repos_array: {response.status_code}, {response.text}")
             break
 
-        page += 1
+        page_number += 1
 
-    return repos
+    return fetched_repos_array
 
 
-filtered_repos = get_filtered_repos(max_results=500)
+filtered_fetched_repos_array = get_filtered_repos(max_results=500)
 
-if filtered_repos:
-    for single_repo in filtered_repos:
+'''
+if filtered_fetched_repos_array:
+    print(f"filtered_fetched_repos_array LENGTH: {len(filtered_fetched_repos_array)}")
+    for single_repo in filtered_fetched_repos_array:
         repo_name = single_repo['name']
         owner_login = single_repo['owner']['login']
         stars = single_repo['stargazers_count']
         updated_at = single_repo['updated_at']
         print(f"Repository: {repo_name}, Author: {owner_login}, Stars: {stars}, Updated At: {updated_at}")
 else:
-    print("never saw filtered repos")
+    print("never saw filtered fetched_repos_array")
+'''
+
+if filtered_fetched_repos_array:
+    print(f"ENUM ATTEMPT filtered_fetched_repos_array LENGTH: {len(filtered_fetched_repos_array)}")
+    for index_pos, single_repo in enumerate(filtered_fetched_repos_array):
+        repo_name = single_repo['name']
+        owner_login = single_repo['owner']['login']
+        stars = single_repo['stargazers_count']
+        updated_at = single_repo['updated_at']
+        print(f"Index_pos{index_pos} Repository: {repo_name}, Author: {owner_login}, Stars: {stars}, Updated At: {updated_at}")
+else:
+    print("never saw filtered fetched_repos_array")
