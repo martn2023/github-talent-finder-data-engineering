@@ -14,7 +14,7 @@ def get_filtered_repos(max_results=500):
     print("get_filtered_repos started", "max results:", max_results)
 
     # Search query parameters
-    push_time_range = 'pushed:2024-09-01T00:00:00..2024-09-01T00:01:00'
+    push_time_range = 'pushed:2024-09-01T00:00:00..2024-09-01T00:10:00'
     visibility = 'is:public'
     no_forks = '-fork:true'
 
@@ -26,12 +26,12 @@ def get_filtered_repos(max_results=500):
     repos_per_page = 100  # Number of repositories per page
 
     while len(repos) < max_results:
-        print("loop iteration starting")
+        print(f"loop iteration starting, and this is LENGTH OF REPOS: {len(repos)} vs max {max_results} ")
 
-        # GitHub search API for repositories
+        # GitHub Search API for repositories
         params = {
             'q': query,  # Combined query parameters
-            'per_page': repos_per_page,  # Correct API parameter
+            'per_page': repos_per_page,  # per_page is a term set by GitHub's team, repos_per_page is my custom term
             'page': page
         }
 
