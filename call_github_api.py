@@ -14,19 +14,23 @@ headers = {
 
 def get_filtered_repos(max_results=500):
     print("get_filtered_repos started", "max results:", max_results)
+
+
     # Search query parameters
-    query = (
-        'pushed:2024-09-01T00:00:00..2024-09-01T00:01:00'  # Time window
-    )
+    push_time_range = 'pushed:2024-09-01T00:00:00..2024-09-01T00:01:00'
+    visibility = 'is:public'
+
+    # Combine query parameters
+    query = f'{push_time_range} {visibility}'
 
     repos = []
     page = 1
-    per_page = 100  # Number of repositories per page
+    repos_per_page = 100  # Number of repositories per page
 
     while len(repos) < max_results:
         print("loop iteration starting")
         # GitHub search API for repositories
-        url = f"{BASE_URL}/search/repositories?q={query}&per_page={per_page}&page={page}"
+        url = f"{BASE_URL}/search/repositories?q={query}&repos_per_page={repos_per_page}&page={page}"
         print(f"url created: {url}")
 
         response = requests.get(url, headers=headers)
@@ -47,7 +51,7 @@ def get_filtered_repos(max_results=500):
                 break
 
             # Check if we've reached the end (fewer results than requested per page)
-            if len(items) < per_page:
+            if len(items) < repos_per_page:
                 break
         else:
             print(f"Failed to fetch repos: {response.status_code}, {response.text}")

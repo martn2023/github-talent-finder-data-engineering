@@ -3,6 +3,3 @@ jupyter
 
 # needed to increment API searches
 datetime
-
-
-requests
