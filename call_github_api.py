@@ -1,3 +1,5 @@
+import os # need it for saving files
+import json # required for exporting json info
 from config import github_pat  # imported as string format
 import requests
 
@@ -8,7 +10,6 @@ headers = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json"
 }
-
 
 def get_filtered_repos(max_results=500):
     print("get_filtered_repos started", "max results:", max_results)
@@ -80,13 +81,30 @@ else:
     print("never saw filtered fetched_repos_array")
 '''
 
+def save_to_file(data, directory="sample_data_pulls_github_api", filename="most_recent_pull.json"):
+    if not os.path.exists(directory):
+        os.makedirs(directory) # Create directory if it does not exist
+
+    filepath = os.path.join(directory, filename)
+
+    with open(filepath, 'w') as json_file:
+        json.dump(data, json_file, indent=4)
+
+    print(f"JSON successfully saved to {filepath}")
+
 if filtered_fetched_repos_array:
     print(f"ENUM ATTEMPT filtered_fetched_repos_array LENGTH: {len(filtered_fetched_repos_array)}")
+
+    '''
     for index_pos, single_repo in enumerate(filtered_fetched_repos_array):
         repo_name = single_repo['name']
         owner_login = single_repo['owner']['login']
         stars = single_repo['stargazers_count']
         updated_at = single_repo['updated_at']
         print(f"Index_pos{index_pos} Repository: {repo_name}, Author: {owner_login}, Stars: {stars}, Updated At: {updated_at}")
+    '''
+
+    save_to_file(filtered_fetched_repos_array)
+
 else:
     print("never saw filtered fetched_repos_array")
