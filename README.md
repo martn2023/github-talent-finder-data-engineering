@@ -1,4 +1,7 @@
-# YouTube (Data Engineering)
+# Emerging-Tech Talent (Data Engineering)
+This is a tool helps identify discover engineering talent that have relevant skills, but other recruiters haven't seen yet.
+
+
 
 ## I. Author's context:
 After building out 3 CRUD web apps, I wanted to expand my horizons. I just finished my first 1 machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), which really opened my eyes to how coming up with good systems for delivering clean data is such a big part of the data science/ML functions. For this reason, I picked a __data engineering__ project.

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 #TEMPORARY VARIABLES
 
-searched_keyword_string = "Elon Musk"
+searched_keyword_string = "Mark Zuckerberg"
 
 # assume time is according to YouTube API at UTC 0, so 4 hours ahead of New York and 7 ahead of San Francisco
 # A midnight pull the next day will be seen at 8PM in New York today
