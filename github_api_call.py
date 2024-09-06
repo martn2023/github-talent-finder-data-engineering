@@ -32,11 +32,15 @@ def get_filtered_repos(max_results=500):
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
+            print("some response found!")
             result = response.json()
+
+            total_count = result.get('total_count', 0)
+            print(f"Total number of repositories: {total_count}")
+
             items = result.get('items', [])
             repos.extend(items)
 
-            # Check if we've fetched enough results
             if len(repos) >= max_results:
                 # Trim the list to max_results and stop fetching
                 repos = repos[:max_results]
