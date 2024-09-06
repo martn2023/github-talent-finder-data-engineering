@@ -12,17 +12,11 @@ headers = {
 }
 
 
-def get_filtered_repos(max_results=10000):
-    """Fetch repositories updated within a specific time window with various filters, capped at max_results"""
-
+def get_filtered_repos(max_results=500):
+    print("get_filtered_repos started", "max results:", max_results)
     # Search query parameters
     query = (
         'pushed:2024-09-01T00:00:00..2024-09-01T00:01:00'  # Time window
-        '+fork:false'  # Exclude forks
-        '+stars:1..10'  # Star count between 1 and 10
-        '+topic:supervised-learning'  # Tagged with 'supervised-learning'
-        '+archived:false'  # Exclude archived repos
-        '+is:public'  # Only public repositories
     )
 
     repos = []
@@ -30,8 +24,10 @@ def get_filtered_repos(max_results=10000):
     per_page = 100  # Number of repositories per page
 
     while len(repos) < max_results:
+        print("loop iteration starting")
         # GitHub search API for repositories
         url = f"{BASE_URL}/search/repositories?q={query}&per_page={per_page}&page={page}"
+        print(f"url created: {url}")
 
         response = requests.get(url, headers=headers)
 
@@ -39,6 +35,12 @@ def get_filtered_repos(max_results=10000):
             result = response.json()
             items = result.get('items', [])
             repos.extend(items)
+
+            # Check if we've fetched enough results
+            if len(repos) >= max_results:
+                # Trim the list to max_results and stop fetching
+                repos = repos[:max_results]
+                break
 
             # Check if we've reached the end (fewer results than requested per page)
             if len(items) < per_page:
@@ -49,14 +51,10 @@ def get_filtered_repos(max_results=10000):
 
         page += 1
 
-        # Stop if we reach the max_results limit
-        if len(repos) >= max_results:
-            repos = repos[:max_results]  # Trim to max_results if exceeded
-            break
-
     return repos
 
 
+'''
 def save_to_json(data):
     """Save the fetched repositories to a JSON file in the specified folder"""
     directory = "sample_data_pulls_github_api"
@@ -68,12 +66,15 @@ def save_to_json(data):
         json.dump(data, f, indent=4)
     print(f"Results saved to {file_path}")
 
+'''
 
-# Fetch filtered repositories with a maximum of 10,000 results
-filtered_repos = get_filtered_repos(max_results=10000)
+filtered_repos = get_filtered_repos(max_results=500)
 
 if filtered_repos:
-    save_to_json(filtered_repos)
+    #save_to_json(filtered_repos)
     for single_repo in filtered_repos:
         print(
             f"Repository: {single_repo['name']}, Stars: {single_repo['stargazers_count']}, Updated At: {single_repo['updated_at']}")
+
+else:
+    print("never saw filtered repos")
