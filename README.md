@@ -15,11 +15,11 @@ This is a tool helps identify discover engineering talent. If I were a technical
 that have relevant skills, but other recruiters haven't seen yet.
 
 ## I. Author's context:
-I just finished my 1st machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), and an area where I've been weak on is the underlying __data_engineering__ i.e. I was pulling data to my local machine.
+While doing 2 data analytics projects, I was pulling data to my local machine on an ad hoc basis.
 
 That strategy lacks automation, reliability, scalability, and security.
 
-This new __data_engineering__ project solves all 5 by upgrading to a 100% cloud-based solution. 
+This new __data_engineering__ project addresses all 5 concerns by upgrading to a 100% cloud-based solution. 
 
 ## II. What I built/New tech used:
 #### 1. Google Cloud Function
