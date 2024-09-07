@@ -15,22 +15,27 @@ This is a tool helps identify discover engineering talent. If I were a technical
 that have relevant skills, but other recruiters haven't seen yet.
 
 ## I. Author's context:
-I just finished my 1st machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), which really opened my eyes to how coming up with good systems for delivering clean data is such a big part of the data science/ML functions. My previous data engineering projects successfully collected data, but were run manually off a local machine. That created 5 issues, risks that this  __data engineering__ project addresses by escalating to a cloud-based solution:<br>
-<br>
-__AUTOMATION__: I'm not awake 24/7 to manually run scripts<br>
-__RELIABILITY__: Automation is useless if my computer crashed between pings, or the internet connection dies<br>
-__SCALABILITY__: Traffic may overwhelm my machine, which has hard limits its CPU, RAM, and hard disk space<br>
-__INTEGRATION__: The addition of other tools/services may require clunky installations and management<br>
-__SECURITY__: I don't want to worry about manually configuring security settings or defending against malware<br>
+I just finished my 1st machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), and an area where I've been weak on is the underlying __data_engineering__ i.e. I was pulling data to my local machine.
 
+That strategy lacks automation, reliability, scalability, and security.
 
-## II. New technologies demonstrated (100% cloud-based, not local):
-#### 1. Google Cloud Function (data ingestion)
-#### 2. Google Cloud SQL (data storage)
+This new __data_engineering__ project solves all 5 by upgrading to a 100% cloud-based solution. 
+
+## II. What I built/New tech used:
+#### 1. Google Cloud Function
+Removes risk of a local machine or internet connection
+
+#### 2. Google Cloud SQL
+Sidesteps processing speed and storage limitations, allowing data storage to scale
+
 #### 3. Google BigQuery (scalable data transformation)
-#### 4. Google Cloud Scheduler (task management for 1 through 4)
-#### 5. Grafana (data visualization)
+Sidesteps CPU and RAM limitations of a local machine, allowing scalable data transformation
 
+#### 4. Google Cloud Scheduler
+Automates entire ETL cycle
+
+#### 5. Grafana (data visualization)
+Allows for data visualization without uptime concerns
 
 ## III. Process
 ### (A) DATA ENGINEERING (80%):
