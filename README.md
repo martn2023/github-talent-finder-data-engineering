@@ -15,13 +15,13 @@ This is a tool helps identify discover engineering talent. If I were a technical
 that have relevant skills, but other recruiters haven't seen yet.
 
 ## I. Author's context:
-I just finished my 1st machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), which really opened my eyes to how coming up with good systems for delivering clean data is such a big part of the data science/ML functions. My previous data engineering projects successfully collected data, but were run manually off a local machine. That created 5 issues, risks that this  __data engineering__ project addresses by escalating to a cloud-based solution:
-
-__AUTOMATION__: I'm not awake 24/7 to manually run scripts
-__RELIABILITY__: Automation is useless if my computer crashed between pings, or the internet connection dies
-__SCALABILITY__: Traffic may overwhelm my machine, which has hard limits its CPU, RAM, and hard disk space
-__INTEGRATION__: The addition of other tools/services may require clunky installations and management
-__SECURITY__: I don't want to worry about manually configuring security settings or defending against malware
+I just finished my 1st machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), which really opened my eyes to how coming up with good systems for delivering clean data is such a big part of the data science/ML functions. My previous data engineering projects successfully collected data, but were run manually off a local machine. That created 5 issues, risks that this  __data engineering__ project addresses by escalating to a cloud-based solution:<br>
+<br>
+__AUTOMATION__: I'm not awake 24/7 to manually run scripts<br>
+__RELIABILITY__: Automation is useless if my computer crashed between pings, or the internet connection dies<br>
+__SCALABILITY__: Traffic may overwhelm my machine, which has hard limits its CPU, RAM, and hard disk space<br>
+__INTEGRATION__: The addition of other tools/services may require clunky installations and management<br>
+__SECURITY__: I don't want to worry about manually configuring security settings or defending against malware<br>
 
 
 ## II. New technologies demonstrated (100% cloud-based, not local):
