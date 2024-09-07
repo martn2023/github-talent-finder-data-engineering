@@ -1,6 +1,40 @@
-# Emerging-Tech Talent (Data Engineering)
-This is a tool helps identify discover engineering talent. If I were a technical recruiter hunting for a "machine learning" engineer, I might want a list of engineers who:
+# I. Author's context:
+- While doing 2 data analytics projects, I was pulling data to my local machine on an ad hoc basis. That strategy lacks the automation, reliability, scalability, integration ease, and security needed for a continuous stream of data.
 
+- This __data engineering__ project addresses all 5 concerns by __upgrading to a 100% cloud-based solution__. The resulting tool helps technical recruiters identify candidates with relevant GitHub repos.
+
+# II. What I built/New tech used:
+## 1. Fully cloud-based ETL pipeline (80%)
+### Data Ingestion
+Runs my scripts in __Google Cloud Function__ instead of a local machine i.e. no downtime from machine crashed, power outages, or internet disruptions
+<br>
+<br>
+### Data Storage
+Runs an expandable database __Google Cloud SQL__, which is no longer limited by a machine's disk space
+<br>
+<br>
+### Data Preparation
+Does large-scale data cleanings and transformations __BigQuery__, where a local solution was constrained by processing power, memory, or the Pandas' use case
+<br>
+<br>
+### Automated Task Management
+Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule and deal with retries
+<br>
+<br>
+## 2. Leveraging resulting data (20%)
+### Dashboards
+Uses __Graphana__ for real-time data visualization without uptime concerns
+<br>
+<br>
+### Data Analysis
+- Which are topics were most updated in the last 30 days?
+- How does this compare with what people are appreciating through stars?
+- Which engineers appear to be the ripest, underrated, and approachable candidates?
+- Do repo updates spike during a certain time(s) of day?
+<br>
+<br>
+
+# III. Defining "good" engineers:
 1. have relevant repos:
    a) tags match my searched keywords e.g. "machine learning"
    b) repo was updated recently
@@ -14,93 +48,18 @@ This is a tool helps identify discover engineering talent. If I were a technical
 
 that have relevant skills, but other recruiters haven't seen yet.
 
-## I. Author's context:
-While doing 2 data analytics projects, I was pulling data to my local machine on an ad hoc basis.
-
-That strategy lacks the automation, reliability, scalability, and security needed for a continuous stream of data.
-
-This new __data_engineering__ project addresses all 5 concerns by upgrading to a 100% cloud-based solution. 
-
-## II. What I built/New tech used:
-#### 1. Google Cloud Function
-Runs my scripts in the cloud instead of a local machine i.e. no downtime from machine crashed, power outages, or internet disruptions
-
-#### 2. Google Cloud SQL
-Runs an expandable database in the cloud, which is no longer limited by a machine's disk space
-
-#### 3. Google BigQuery
-Does large-scale data transformations in the cloud, where a local solution is constrained by processing power, memory, or the Pandas' use case
-
-#### 4. Google Cloud Scheduler
-Automates entire ETL cycle via integrations with the 3 aforementioned tools
-
-#### 5. Grafana
-Allows for real-time data visualization without uptime concerns
-
-## III. Process
-### (A) DATA ENGINEERING (80%):
-#### 1. Data Ingestion Pipeline:
-  - YouTube has a free API
-  - Used __Apache Kafka__ to look at YouTube's newest videos every hour and pull information e.g. url, title, author, description text, and video length
-  - Decided on cloud-based version to demonstrate robust systems that:
-    - have uptime and reliability: what happens if I try to save money by running this on my local machine, and it's turned off during the hourly data pull? Or it crashes mid-pull?
-    - show fault tolerance: it handles failures (network issues, rate limiters) with retries and logging
-    - are scalable: an individual search may yield 1,000 different videos, but I wanted to build the system that can handle > 1,000,000 videos a day
-
-  #### 2. Data Processing Pipeline:
-  - Data cleaning:
-    - Using __Apache Spark__ in the cloud instead of manually cleaning data ad hoc with Python scripts (CAUTION)
-    - Spark removes non-English results
-    - Spark removes duplicates
-  - Data transformation:
-    - Spark encodes content
-    - Outside of Spark, the NLP library __VADER conducts sentiment analysis__ on video titles
-
-  #### 3. Data Storage Pipeline:
-  - I've done Postgres and Mongo databases on my local drive before, but now I need something reliable in the cloud
-  - I considered Amazon RDS due to its market share, but went with __Google Cloud SQL__ to optimize for ease-of-use
-  - Prepared data, including sentiment analysis scores (video title polarity) now loaded to database
-
-  #### 4. Task Orchestration Pipeline:
-  - Configured __Apache Airflow__ to:
-    - have scheduled:
-      - data pulls with Kafka
-      - data transformations with Spark
-      - data storage with Google Cloud SQL
-    - recognize failed/interrupted tasks and re-invoke pipelines
- 
-### (b) DATA ANALYSIS (20%):
-#### 5. Statistical Analysis + Pattern Recognition:
-  - It seems there is a huge gap in the tone of videos put out depending on the search topic
-
-#### 6. Data Visualization:
-  - I considered Tableau due to my past certifications in it, but went with __Graphana__
-  - Volume of videos by keyword searched
-  - Video title sentiment by keyword searched
-  - Volume of videos throughout the day
-
-#### 7. Findings:
-  - 80% of videos go up during only 25% of the day: 11:00 to 14:00 EST and 21:00 to 00:00 EST **WARNING: HYPOTHETICAL PLACEHOLDER VALUES**
-    - Keep in mind that YouTube is a North American company and that people in other time zones have local alternatives
-    - I wonder if this is because these times are when content creators are done with their daytime work, if they're deliberately dropping videos when their AUDIENCE is done with dinner
-  - Donald Trump and Kamala Harris, the 2 nominees for this election get their share of both positive and negative video titles/headlines. However, that changes dramatically when we filter for "mainstream media channels", which I define as major news outlets based in the USA that are in the top 20 of most visited news web sites. When only focusing on major news outlets: the % of opinionated video titles that are positive: **WARNING: HYPOTHETICAL PLACEHOLDER VALUES**
-    - drops from 50% positive to 10% positive on "Donald Trump"
-    - rises from 50% positive to 90% positive on "Kamala Harris"
-
-## IV. Screenshots (illustrative, but not comprehensive):
-
+# IV. Screenshots (illustrative, but not comprehensive):
 Findings are presented in screenshots below:
 
 
-## V. Learnings:
+# V. Learnings:
 - Hosting can get expensive!
 
-
-## VI. Potential improvements:
+# VI. Potential improvements:
 >**Product/UI:**<br>
 - This was run on a budget. With the larger needs and budget of a Big Tech employer, we could have done grabbed more videos (searching further back in time) or grabbed videos about even more topics, for example:<br>
- -- every single politician running for a presidency, governorship, senate seat, house rep, or mayoral position<br>
- -- spread across every most countries<br>
+  - every single politician running for a presidency, governorship, senate seat, house rep, or mayoral position<br>
+  - spread across every most countries
 
 >**Tools**<br>
 - Introducing __NiFI__ to the start of the process chain
