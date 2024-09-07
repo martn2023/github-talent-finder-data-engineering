@@ -17,25 +17,25 @@ that have relevant skills, but other recruiters haven't seen yet.
 ## I. Author's context:
 While doing 2 data analytics projects, I was pulling data to my local machine on an ad hoc basis.
 
-That strategy lacks automation, reliability, scalability, and security.
+That strategy lacks the automation, reliability, scalability, and security needed for a continuous stream of data.
 
 This new __data_engineering__ project addresses all 5 concerns by upgrading to a 100% cloud-based solution. 
 
 ## II. What I built/New tech used:
 #### 1. Google Cloud Function
-Removes risk of a local machine or internet connection
+Runs my scripts in the cloud instead of a local machine i.e. no downtime from machine crashed, power outages, or internet disruptions
 
 #### 2. Google Cloud SQL
-Sidesteps processing speed and storage limitations, allowing data storage to scale
+Runs an expandable database in the cloud, which is no longer limited by a machine's disk space
 
-#### 3. Google BigQuery (scalable data transformation)
-Sidesteps CPU and RAM limitations of a local machine, allowing scalable data transformation
+#### 3. Google BigQuery
+Does large-scale data transformations in the cloud, where a local solution is constrained by processing power, memory, or the Pandas' use case
 
 #### 4. Google Cloud Scheduler
-Automates entire ETL cycle
+Automates entire ETL cycle via integrations with the 3 aforementioned tools
 
-#### 5. Grafana (data visualization)
-Allows for data visualization without uptime concerns
+#### 5. Grafana
+Allows for real-time data visualization without uptime concerns
 
 ## III. Process
 ### (A) DATA ENGINEERING (80%):
