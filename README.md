@@ -1,16 +1,34 @@
 # Emerging-Tech Talent (Data Engineering)
-This is a tool helps identify discover engineering talent that have relevant skills, but other recruiters haven't seen yet.
+This is a tool helps identify discover engineering talent. If I were a technical recruiter hunting for a "machine learning" engineer, I might want a list of engineers who:
 
+1. have relevant repos:
+   a) tags match my searched keywords e.g. "machine learning"
+   b) repo was updated recently
+   c) repo has at least 10 commits, a minimum file size, and was created at least 4 days ago, as a heuristic for intensity and depth 
+   d) repo is externally validated by at least 1 star
+   e) priority given to profiles with 2 or more relevant repos 
+2. who are accessible:
+   a) profiles are from an individual, not an organization
+   b) GitHub profiles show a method for contacting e.g.e-mail address, personal web site, LinkedIn pages, or Twitter handles
+   c) profiles deprioritized if too many followers or stars
 
+that have relevant skills, but other recruiters haven't seen yet.
 
 ## I. Author's context:
-After building out 3 CRUD web apps, I wanted to expand my horizons. I just finished my first 1 machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), which really opened my eyes to how coming up with good systems for delivering clean data is such a big part of the data science/ML functions. For this reason, I picked a __data engineering__ project.
+I just finished my 1st machine learning project ([posted on GitHub](https://github.com/martn2023/housing-prices-ML-supervised-learning)), which really opened my eyes to how coming up with good systems for delivering clean data is such a big part of the data science/ML functions. My previous data engineering projects successfully collected data, but were run manually off a local machine. That created 5 issues, risks that this  __data engineering__ project addresses by escalating to a cloud-based solution:
+
+__AUTOMATION__: I'm not awake 24/7 to manually run scripts
+__RELIABILITY__: Automation is useless if my computer crashed between pings, or the internet connection dies
+__SCALABILITY__: Traffic may overwhelm my machine, which has hard limits its CPU, RAM, and hard disk space
+__INTEGRATION__: The addition of other tools/services may require clunky installations and management
+__SECURITY__: I don't want to worry about manually configuring security settings or defending against malware
+
 
 ## II. New technologies demonstrated (100% cloud-based, not local):
-#### 1. Apache Kafka (data ingestion)
-#### 2. Apache Spark (data transformation)
-#### 3. Apache Airflow (task manager for 1 and 2)
-#### 4. Google Cloud SQL (database)
+#### 1. Google Cloud Function (data ingestion)
+#### 2. Google Cloud SQL (data storage)
+#### 3. Google BigQuery (scalable data transformation)
+#### 4. Google Cloud Scheduler (task management for 1 through 4)
 #### 5. Grafana (data visualization)
 
 

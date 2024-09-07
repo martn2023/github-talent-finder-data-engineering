@@ -11,11 +11,11 @@ headers = {
     "Accept": "application/vnd.github.v3+json"
 }
 
-def get_filtered_repos(max_results=500):
+def get_filtered_repos(max_results=500): # default cap is arbitrarily set at 500, but I manually set searches to 10000 for now
     print("get_filtered_repos started", "max results:", max_results)
 
     # Search query parameters
-    push_time_range = 'pushed:2024-09-01T00:00:00..2024-09-01T00:10:00'
+    push_time_range = 'pushed:2024-09-01T00:00:00..2024-09-01T00:00:05'
     visibility = 'is:public'
     no_forks = '-fork:true'
 
@@ -66,7 +66,7 @@ def get_filtered_repos(max_results=500):
     return fetched_repos_array
 
 
-filtered_fetched_repos_array = get_filtered_repos(max_results=500)
+filtered_fetched_repos_array = get_filtered_repos(max_results=10000)
 
 '''
 if filtered_fetched_repos_array:
