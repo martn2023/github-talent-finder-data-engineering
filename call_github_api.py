@@ -1,15 +1,20 @@
 import os # need it for saving files
 import json # required for exporting json info
-from config import github_pat  # imported as string format
+
+from config import github_pat, connection_parameters_for_online_db  # imported as string format
 import requests
 
 GITHUB_TOKEN = github_pat
-
 BASE_URL = "https://api.github.com"
 headers = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json"
 }
+
+cursor = connection_parameters_for_online_db.cursor()
+
+
+
 
 def get_filtered_repos(max_results=500): # default cap is arbitrarily set at 500, but I manually set searches to 10000 for now
     print("get_filtered_repos started", "max results:", max_results)
@@ -66,7 +71,7 @@ def get_filtered_repos(max_results=500): # default cap is arbitrarily set at 500
     return fetched_repos_array
 
 
-filtered_fetched_repos_array = get_filtered_repos(max_results=10000)
+filtered_fetched_repos_array = get_filtered_repos(max_results=1000) #1000 came from documentation on GitHub Search API
 
 '''
 if filtered_fetched_repos_array:
@@ -144,3 +149,6 @@ if filtered_fetched_repos_array:
 
 else:
     print("never saw filtered fetched_repos_array")
+
+cursor.close()
+connection_parameters_for_online_db.close()

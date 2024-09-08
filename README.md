@@ -54,6 +54,12 @@ Findings are presented in screenshots below:
 
 # V. Learnings:
 - In Postgres databases, INSERTING unique values that were already in the db won't work. Contrary to intuition, the solution is not using Python Try/Except's; SQL has an "ON CONFLICT" term.
+- Databases follow A.C.I.D laws that are hard-coded into relational databases' technology:
+  - Atomicity: All-or-none, like a trade order on the stock market
+  - Consistency: If you violate a formatting or other rule, the changes won't go through
+  - Isolation: Transactions are sequential instead of concurrent (only 1 kid at a time is allowed to put his hand in the bag of candy)
+  - Durability: Data remains even after a crash
+- adsf
 
 # VI. Potential improvements:
 >**Product/UI:**<br>
