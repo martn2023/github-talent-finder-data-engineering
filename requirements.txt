@@ -3,3 +3,6 @@ jupyter
 
 # needed to increment API searches
 datetime
+
+# need to connect to the (online) Postgres database
+psycopg2

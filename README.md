@@ -53,7 +53,7 @@ Findings are presented in screenshots below:
 
 
 # V. Learnings:
-- Hosting can get expensive!
+- In Postgres databases, INSERTING unique values that were already in the db won't work. Contrary to intuition, the solution is not using Python Try/Except's; SQL has an "ON CONFLICT" term.
 
 # VI. Potential improvements:
 >**Product/UI:**<br>

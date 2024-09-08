@@ -81,6 +81,7 @@ else:
     print("never saw filtered fetched_repos_array")
 '''
 
+'''
 def save_to_file(data, directory="sample_data_pulls_github_api", filename="most_recent_pull.json"):
     if not os.path.exists(directory):
         os.makedirs(directory) # Create directory if it does not exist
@@ -91,6 +92,41 @@ def save_to_file(data, directory="sample_data_pulls_github_api", filename="most_
         json.dump(data, json_file, indent=4)
 
     print(f"JSON successfully saved to {filepath}")
+
+'''
+
+def insert_or_overwrite_repo_result(repo_result, cursor):
+    # Inserting or updating the repo data
+    sql = """INSERT INTO github_repos (
+                id, name, owner_login, fork, description, size, stargazers_count, 
+                watchers_count, updated_at, created_at, url) 
+             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+             ON CONFLICT (id) 
+             DO UPDATE SET 
+                name = EXCLUDED.name,
+                owner_login = EXCLUDED.owner_login,
+                fork = EXCLUDED.fork,
+                description = EXCLUDED.description,
+                size = EXCLUDED.size,
+                stargazers_count = EXCLUDED.stargazers_count,
+                watchers_count = EXCLUDED.watchers_count,
+                updated_at = EXCLUDED.updated_at,
+                url = EXCLUDED.url;
+             """
+    # Executing the query with the data from repo_result
+    cursor.execute(sql, (
+        repo_result['id'],  # Assuming GitHub returns this as an integer
+        repo_result['name'],
+        repo_result['owner']['login'],
+        repo_result['fork'],
+        repo_result.get('description'),  # 'description' might be null
+        repo_result['size'],
+        repo_result['stargazers_count'],
+        repo_result['watchers_count'],
+        repo_result['updated_at'],  # Assuming it's in ISO 8601 format
+        repo_result['created_at'],  # Same assumption here
+        repo_result['html_url']
+    ))
 
 if filtered_fetched_repos_array:
     print(f"ENUM ATTEMPT filtered_fetched_repos_array LENGTH: {len(filtered_fetched_repos_array)}")
@@ -104,7 +140,7 @@ if filtered_fetched_repos_array:
         print(f"Index_pos{index_pos} Repository: {repo_name}, Author: {owner_login}, Stars: {stars}, Updated At: {updated_at}")
     '''
 
-    save_to_file(filtered_fetched_repos_array)
+    insert_or_overwrite_repo_result(filtered_fetched_repos_array)
 
 else:
     print("never saw filtered fetched_repos_array")
