@@ -6,3 +6,6 @@ datetime
 
 # need to connect to the (online) Postgres database
 psycopg2
+
+# this is for python to talk to SQL databases
+mysql-connector
