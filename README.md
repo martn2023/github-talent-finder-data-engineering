@@ -59,7 +59,8 @@ Findings are presented in screenshots below:
   - Consistency: If you violate a formatting or other rule, the changes won't go through
   - Isolation: Transactions are sequential instead of concurrent (only 1 kid at a time is allowed to put his hand in the bag of candy)
   - Durability: Data remains even after a crash
-- adsf
+- Serverless tools like Google Cloud Function have no "preview" button, forcing long wait times between source code iterations
+- 
 
 # VI. Potential improvements:
 >**Product/UI:**<br>
@@ -68,5 +69,4 @@ Findings are presented in screenshots below:
   - spread across every most countries
 
 >**Tools**<br>
-- Introducing __NiFI__ to the start of the process chain
-- Introducing __Hadoop__ to the end of the process chain
+- Introd
