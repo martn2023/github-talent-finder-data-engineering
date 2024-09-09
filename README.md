@@ -60,7 +60,10 @@ Findings are presented in screenshots below:
   - Isolation: Transactions are sequential instead of concurrent (only 1 kid at a time is allowed to put his hand in the bag of candy)
   - Durability: Data remains even after a crash
 - Serverless tools like Google Cloud Function have no "preview" button, forcing long wait times between source code iterations
-- 
+- So many challenges getting the Google Cloud Function to read database from Google Cloud SQL:
+  - adding role + permissions
+  - adding firewall
+  - swapping to postgres from mysql, and the port that goes with it
 
 # VI. Potential improvements:
 >**Product/UI:**<br>
