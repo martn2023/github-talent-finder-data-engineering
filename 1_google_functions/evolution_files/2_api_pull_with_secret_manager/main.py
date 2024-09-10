@@ -36,8 +36,14 @@ def call_github_search(pat: str):
     return github_search_results_in_json
 
 
+def select_all_from_db(credentials):
+
+
 
 def get_github_repos(request):
+    db_credentials = get_db_credentials_from_secret_manager()
+
+
     pat_payload = get_pat_from_secret_manager()
     pat_json = json.loads(pat_payload)
     retrieved_pat = pat_json["GITHUB_PAT"]
@@ -52,4 +58,9 @@ def get_github_repos(request):
         ids_array.append(individual_repo_id)
 
     reporting_length = len(ids_array)
-    return [reporting_length,ids_array]
+    [reporting_length,ids_array]
+
+
+
+    #select_all_from_db = #
+    return db_credentials
