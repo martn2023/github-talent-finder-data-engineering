@@ -29,7 +29,7 @@ def get_filtered_repos(max_results=500): # default cap is arbitrarily set at 500
 
     fetched_repos_array = []
     page_number = 1
-    fetched_repos_array_per_page = 100  # Number of fetched_repos_arrayitories per page
+    fetched_repos_array_per_page = 100  # Number of fetched_repos per page
 
     while len(fetched_repos_array) < max_results:
         print(f"loop iteration starting, and this is LENGTH OF REPOS: {len(fetched_repos_array)} vs max {max_results} ")
@@ -100,6 +100,7 @@ def save_to_file(data, directory="sample_data_pulls_github_api", filename="most_
 
 '''
 
+'''
 def insert_or_overwrite_repo_result(repo_result, cursor):
     # Inserting or updating the repo data
     sql = """INSERT INTO github_repos (
@@ -132,20 +133,22 @@ def insert_or_overwrite_repo_result(repo_result, cursor):
         repo_result['created_at'],  # Same assumption here
         repo_result['html_url']
     ))
+'''
+
 
 if filtered_fetched_repos_array:
     print(f"ENUM ATTEMPT filtered_fetched_repos_array LENGTH: {len(filtered_fetched_repos_array)}")
 
-    '''
+
     for index_pos, single_repo in enumerate(filtered_fetched_repos_array):
         repo_name = single_repo['name']
         owner_login = single_repo['owner']['login']
         stars = single_repo['stargazers_count']
         updated_at = single_repo['updated_at']
         print(f"Index_pos{index_pos} Repository: {repo_name}, Author: {owner_login}, Stars: {stars}, Updated At: {updated_at}")
-    '''
 
-    insert_or_overwrite_repo_result(filtered_fetched_repos_array)
+
+    #insert_or_overwrite_repo_result(filtered_fetched_repos_array)
 
 else:
     print("never saw filtered fetched_repos_array")
