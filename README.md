@@ -65,7 +65,8 @@ Findings are presented in screenshots below:
   - adding role + permissions
   - adding firewall
   - swapping to postgres from mysql, and the port that goes with it
-
+- Google Scheduler has no way of storing variables, so I'll eventually give it a start time and handle incrementing times with the API call script
+- 
 # VI. Potential improvements:
 >**Product/UI:**<br>
 - This was run on a budget. With the larger needs and budget of a Big Tech employer, we could have done grabbed more videos (searching further back in time) or grabbed videos about even more topics, for example:<br>
