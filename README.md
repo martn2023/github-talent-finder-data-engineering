@@ -14,9 +14,14 @@ Runs an expandable database __Google Cloud SQL__, which is no longer limited by 
 <br>
 <br>
 ### Data Preparation
-Does large-scale data cleanings and transformations in __BigQuery__, where a local solution was constrained by processing power, memory, or the Pandas' use case
+Begins with simple Pandas/Python script in GCP Functions again where a local solution was constrained by processing power, memory. __BigQuery__ service provides expansion capabilities into large-scale data cleanings and transformations since it's part of GCP 
 <br>
 <br>
+### Data Visualization
+Uses __Google Cloud Data Studio__ create charts and dashboards
+<br>
+<br>
+
 ### Automated Task Management
 Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule and handle transient failures
 <br>
