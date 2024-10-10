@@ -4,6 +4,8 @@ import requests
 import logging
 from google.cloud import secretmanager
 
+
+# keep this code
 def get_pat_from_secret_manager(version_id="latest"):
     secrets_name = "github-search-secret"
     client = secretmanager.SecretManagerServiceClient()
@@ -13,6 +15,7 @@ def get_pat_from_secret_manager(version_id="latest"):
     json_payload = http_response.payload.data.decode("UTF-8")
     return json_payload
 
+# keep this code
 def get_db_credentials_from_secret_manager(version_id="latest"):
     secrets_name = "database-crud-secret"
     client = secretmanager.SecretManagerServiceClient()
@@ -22,6 +25,7 @@ def get_db_credentials_from_secret_manager(version_id="latest"):
     json_payload = http_response.payload.data.decode("UTF-8")
     return json_payload #this was validated in form by older script
 
+# need to change this code so it calls for profiles/owners instead of the repos
 def call_github_search(pat: str):
     url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
     headers = {
@@ -32,7 +36,7 @@ def call_github_search(pat: str):
     github_search_results_in_json = http_response_object.json()
     return github_search_results_in_json
 
-
+# Fairly sure this should stay, because it's a general entry into the DATABASE, not a specific TABLE
 def select_all_from_db(db_credentials):
     exposed_host = db_credentials['DB_HOST']
     exposed_port = db_credentials['DB_PORT']
@@ -62,7 +66,7 @@ def select_all_from_db(db_credentials):
     except Exception as reported_error:
         return f"Connecting to database, due to {reported_error}"
 
-
+# comment this whole section out and add a get_github_profile instead
 def get_github_repos(request):
     pat_payload = get_pat_from_secret_manager()
     pat_json = json.loads(pat_payload)
@@ -94,11 +98,12 @@ def get_github_repos(request):
     cursor = connection.cursor()
 
     query = """
-            INSERT INTO github_repos (id, name, owner_login, fork, description, size, stargazers_count, watchers_count, updated_at, created_at, url, db_inserted_date, db_updated_date)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            INSERT INTO github_repos (id, name, owner_login, owner_id, fork, description, size, stargazers_count, watchers_count, updated_at, created_at, url, db_inserted_date, db_updated_date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             ON CONFLICT (id) DO UPDATE SET 
                 name = EXCLUDED.name,
                 owner_login = EXCLUDED.owner_login,
+                owner_id = EXCLUDED.owner_id,
                 fork = EXCLUDED.fork,
                 description = EXCLUDED.description,
                 size = EXCLUDED.size,
@@ -109,12 +114,15 @@ def get_github_repos(request):
                 db_updated_date = CURRENT_TIMESTAMP;
             """
 
+
+
     repo_data_for_insertion = []
     for repo in repos_hash:
         repo_data = (
                 repo['id'],
                 repo['name'],
                 repo['owner']['login'],
+                repo['owner']['id'],
                 repo['fork'],
                 repo.get('description', 'No description'),
                 repo['size'],
