@@ -27,6 +27,51 @@ def get_db_credentials_from_secret_manager(version_id="latest"):
     return json_payload  # this was validated in form by older script
 
 
+def get_recently_updated_owner_ids(request):
+    # Initialize an empty set to store unique owner IDs
+    recently_updated_owner_ids = set()
+
+    # Get database credentials
+    db_credentials = get_db_credentials_from_secret_manager()
+
+    # Connect to the database
+    connection = psycopg2.connect(
+        host=db_credentials['DB_HOST'],
+        port=db_credentials['DB_PORT'],
+        database=db_credentials['DB_NAME'],
+        user=db_credentials['DB_USER'],
+        password=db_credentials['DB_PASS']
+    )
+
+    try:
+        cursor = connection.cursor()
+
+        # Query to find all repos updated in the last hour
+        query = """
+            SELECT owner_id 
+            FROM github_repos 
+            WHERE updated_at >= NOW() - INTERVAL '1 HOUR';
+        """
+
+        cursor.execute(query)
+        updated_repos = cursor.fetchall()
+
+        # Populate the set with owner_id values from the query results
+        for row in updated_repos:
+            recently_updated_owner_ids.add(row[0])  # row[0] is the owner_id
+
+        cursor.close()
+        connection.close()
+
+        # Return the set as JSON for testing purposes
+        return {"recently_updated_owner_ids": list(recently_updated_owner_ids)}, 200
+
+    except Exception as e:
+        if connection:
+            connection.close()
+        return {"error": str(e)}, 500
+
+
 def get_recent_profile_ids():
     # Get DB credentials
     db_credentials = get_db_credentials_from_secret_manager()
@@ -113,30 +158,28 @@ def select_all_from_db(db_credentials):
 
 # new maestro
 def update_github_owners(request):
+    print("STARTING update_github_owners")
+
     pat_payload = get_pat_from_secret_manager()
+    print(f"PRINTING pat_payload")
+    print(pat_payload)
+
     pat_json = json.loads(pat_payload)
     retrieved_pat = pat_json["GITHUB_PAT"]
     github_repos_json = call_github_search(retrieved_pat)
 
+    '''
     db_credentials_payload = get_db_credentials_from_secret_manager()
     db_credentials_payload_json = json.loads(db_credentials_payload)
 
     connection = psycopg2.connect(
-        host=db_credentials_payload_json['DB_HOST'],
-        port=db_credentials_payload_json['DB_PORT'],
-        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
-        user=db_credentials_payload_json['DB_USER'],
-        password=db_credentials_payload_json['DB_PASS']
+        host = db_credentials_payload_json['DB_HOST'],
+        port = db_credentials_payload_json['DB_PORT'],
+        database = db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
+        user = db_credentials_payload_json['DB_USER'],
+        password = db_credentials_payload_json['DB_PASS']
     )
 
-    cursor = connection.cursor()
+    '''
 
-    # connection.commit() # not sure why
-
-    # begin section on pulling data, after insertions were attempted
-    cursor.execute("SELECT * FROM github_owners")
-    results = cursor.fetchall()
-    cursor.close()
-    connection.close()
-
-    return {"DATA RESULTS FROM  TABLE": results}, 200
+    return {"DATA RESULTS FROM TABLE": "No data"}, 200
