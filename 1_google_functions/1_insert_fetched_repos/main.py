@@ -15,6 +15,7 @@ def get_pat_from_secret_manager(version_id="latest"):
     json_payload = http_response.payload.data.decode("UTF-8")
     return json_payload
 
+
 # keep this code
 def get_db_credentials_from_secret_manager(version_id="latest"):
     secrets_name = "database-crud-secret"
@@ -23,7 +24,48 @@ def get_db_credentials_from_secret_manager(version_id="latest"):
     name = f"projects/{project_id}/secrets/{secrets_name}/versions/{version_id}"
     http_response = client.access_secret_version(request={"name": name})
     json_payload = http_response.payload.data.decode("UTF-8")
-    return json_payload #this was validated in form by older script
+    return json_payload  # this was validated in form by older script
+
+
+def get_recent_profile_ids():
+    # Get DB credentials
+    db_credentials = get_db_credentials_from_secret_manager()
+
+    # Connect to the database
+    connection = psycopg2.connect(
+        host=db_credentials['DB_HOST'],
+        port=db_credentials['DB_PORT'],
+        database=db_credentials['DB_NAME'],
+        user=db_credentials['DB_USER'],
+        password=db_credentials['DB_PASS']
+    )
+
+    try:
+        cursor = connection.cursor()
+
+        # SQL query to get distinct owner_logins of repos updated in the last hour
+        query = """
+            SELECT DISTINCT owner_login 
+            FROM github_repos 
+            WHERE updated_at >= NOW() - INTERVAL '1 HOUR';
+        """
+
+        cursor.execute(query)
+        recent_profiles = cursor.fetchall()
+
+        # Convert list of tuples to a set of unique profile IDs
+        profile_ids_set = {row[0] for row in recent_profiles}
+
+        cursor.close()
+        connection.close()
+
+        return profile_ids_set
+
+    except Exception as e:
+        if connection:
+            connection.close()
+        return f"Error querying database: {e}"
+
 
 # need to change this code so it calls for profiles/owners instead of the repos
 def call_github_search(pat: str):
@@ -32,9 +74,11 @@ def call_github_search(pat: str):
         "Authorization": f"Bearer {pat}",
         "Accept": "application/vnd.github.v3+json"
     }
-    http_response_object = requests.get(url, headers=headers) #WARNING, this is coming in as an HTTP response object, not a JSON just yet
+    http_response_object = requests.get(url,
+                                        headers=headers)  # WARNING, this is coming in as an HTTP response object, not a JSON just yet
     github_search_results_in_json = http_response_object.json()
     return github_search_results_in_json
+
 
 # Fairly sure this should stay, because it's a general entry into the DATABASE, not a specific TABLE
 def select_all_from_db(db_credentials):
@@ -47,24 +91,25 @@ def select_all_from_db(db_credentials):
     # WARNING, THE BELOW ARE RESERVED TERMS
     try:
         attempted_db_connection = psycopg2.connect(
-            host = exposed_host,
-            port = exposed_port,
-            database = exposed_db_name, # term of art, can't use NAME
-            user = exposed_user,
-            password = exposed_password
+            host=exposed_host,
+            port=exposed_port,
+            database=exposed_db_name,  # term of art, can't use NAME
+            user=exposed_user,
+            password=exposed_password
         )
 
-        cursor = attempted_db_connection.cursor() # need explanation here
-        cursor.execute("SELECT * FROM github_repos;") # puts the data in the cursor, but still need to get it out
-        rows_of_data = cursor.fetchall() #we cant rely on cursor anymore, because it demands open connection
+        cursor = attempted_db_connection.cursor()  # need explanation here
+        cursor.execute("SELECT * FROM github_repos;")  # puts the data in the cursor, but still need to get it out
+        rows_of_data = cursor.fetchall()  # we cant rely on cursor anymore, because it demands open connection
 
-        cursor.close() # ask why this is imperative
-        attempted_db_connection.close() # ask why this is imperative
+        cursor.close()  # ask why this is imperative
+        attempted_db_connection.close()  # ask why this is imperative
 
-        return rows_of_data # this is a list of tuples
+        return rows_of_data  # this is a list of tuples
 
     except Exception as reported_error:
         return f"Connecting to database, due to {reported_error}"
+
 
 # comment this whole section out and add a get_github_profile instead
 def get_github_repos(request):
@@ -88,11 +133,11 @@ def get_github_repos(request):
     db_credentials_payload_json = json.loads(db_credentials_payload)
 
     connection = psycopg2.connect(
-        host = db_credentials_payload_json['DB_HOST'],
-        port = db_credentials_payload_json['DB_PORT'],
-        database = db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
-        user = db_credentials_payload_json['DB_USER'],
-        password = db_credentials_payload_json['DB_PASS']
+        host=db_credentials_payload_json['DB_HOST'],
+        port=db_credentials_payload_json['DB_PORT'],
+        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
+        user=db_credentials_payload_json['DB_USER'],
+        password=db_credentials_payload_json['DB_PASS']
     )
 
     cursor = connection.cursor()
@@ -114,29 +159,27 @@ def get_github_repos(request):
                 db_updated_date = CURRENT_TIMESTAMP;
             """
 
-
-
     repo_data_for_insertion = []
     for repo in repos_hash:
         repo_data = (
-                repo['id'],
-                repo['name'],
-                repo['owner']['login'],
-                repo['owner']['id'],
-                repo['fork'],
-                repo.get('description', 'No description'),
-                repo['size'],
-                repo['stargazers_count'],
-                repo['watchers_count'],
-                repo['updated_at'],
-                repo['created_at'],
-                repo['html_url']
-            )
+            repo['id'],
+            repo['name'],
+            repo['owner']['login'],
+            repo['owner']['id'],
+            repo['fork'],
+            repo.get('description', 'No description'),
+            repo['size'],
+            repo['stargazers_count'],
+            repo['watchers_count'],
+            repo['updated_at'],
+            repo['created_at'],
+            repo['html_url']
+        )
         repo_data_for_insertion.append(repo_data)
 
-    cursor.executemany(query, repo_data_for_insertion) #attempt insertion
+    cursor.executemany(query, repo_data_for_insertion)  # attempt insertion
 
-    connection.commit() # not sure why
+    connection.commit()  # not sure why
 
     # begin section on pulling data, after insertions were attempted
     cursor.execute("SELECT * FROM github_repos")
@@ -146,6 +189,36 @@ def get_github_repos(request):
 
     return {"DATA RESULTS FROM  TABLE": results}, 200
 
+    # full_table_data = select_all_from_db(db_credentials)
+    # return full_table_data
 
-    #full_table_data = select_all_from_db(db_credentials)
-    #return full_table_data
+
+# new maestro
+def update_github_owners(request):
+    pat_payload = get_pat_from_secret_manager()
+    pat_json = json.loads(pat_payload)
+    retrieved_pat = pat_json["GITHUB_PAT"]
+    github_repos_json = call_github_search(retrieved_pat)
+
+    db_credentials_payload = get_db_credentials_from_secret_manager()
+    db_credentials_payload_json = json.loads(db_credentials_payload)
+
+    connection = psycopg2.connect(
+        host=db_credentials_payload_json['DB_HOST'],
+        port=db_credentials_payload_json['DB_PORT'],
+        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
+        user=db_credentials_payload_json['DB_USER'],
+        password=db_credentials_payload_json['DB_PASS']
+    )
+
+    cursor = connection.cursor()
+
+    # connection.commit() # not sure why
+
+    # begin section on pulling data, after insertions were attempted
+    cursor.execute("SELECT * FROM github_owners")
+    results = cursor.fetchall()
+    cursor.close()
+    connection.close()
+
+    return {"DATA RESULTS FROM  TABLE": results}, 200
