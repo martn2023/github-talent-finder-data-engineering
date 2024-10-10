@@ -161,12 +161,18 @@ def update_github_owners(request):
     print("STARTING update_github_owners")
 
     pat_payload = get_pat_from_secret_manager()
-    print(f"PRINTING pat_payload")
-    print(pat_payload)
+    print("PRINTING pat_payload: ", pat_payload)
 
-    pat_json = json.loads(pat_payload)
-    retrieved_pat = pat_json["GITHUB_PAT"]
-    github_repos_json = call_github_search(retrieved_pat)
+    pat_json = json.loads(pat_payload)  # initializes a dictionary
+    print("PRINTING pat_payload in JSON: ", pat_json)
+
+    retrieved_pat = pat_json["GITHUB_PAT"]  # RETRIEVES value from dictionary entry GITHUB_PAT
+    print("PRINTING retrieved_pat in string format: ")
+    print(retrieved_pat)
+
+    github_repos_json = call_github_search(retrieved_pat)  # using the stringed PAT key, can we call the github search?
+    print("ATTEMPTED github_repos_json")
+    print(github_repos_json)
 
     '''
     db_credentials_payload = get_db_credentials_from_secret_manager()
