@@ -84,17 +84,17 @@ def get_recently_updated_owner_ids():
     for repo_result in repo_results:
         profile_id = str(repo_result[
                              13])  # fragile code that assumes ordering of columns, where profile id is the 14th column and in integer format so we convert to string
+        # github_username = repo_result[2] # using username and not the stable userID because github's API design
         unique_profile_ids.add(profile_id)
 
     unique_profile_ids = list(unique_profile_ids)
     return unique_profile_ids
-    return {}
 
 
 # need to change this code so it calls for profiles/owners instead of the repos
-def call_github_search_owners(pat: str):
-    print("INCORRECTLY SEARCHING REPOS INSTEAD OF OWNERS")
-    url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"  # this is wrong, it should hit owners
+def call_github_search_owners(pat: str, github_profile_number: str):
+    print("NOW FINDING PROFILE INFO BY USERNAME")
+    url = "https://api.github.com/user/" + str(github_profile_number)
     headers = {
         "Authorization": f"Bearer {pat}",
         "Accept": "application/vnd.github.v3+json"
@@ -122,8 +122,8 @@ def update_github_owners(request):
     print("PRINTING retrieved_pat in string format: ", retrieved_pat)
 
     recently_updated_owner_ids = get_recently_updated_owner_ids()
-    print("PRINTING recently_updated_owner_ids")
-    print(recently_updated_owner_ids)
+
+    profile_info_pulled = call_github_search_owners(retrieved_pat, "36039323")
 
     '''synatically correct but strategically redundant. we need to pull repos this fROM SQL and pull OWNERS from github
     github_repos_json = call_github_search(retrieved_pat) #using the stringed PAT key, can we call the github search?
@@ -131,5 +131,6 @@ def update_github_owners(request):
     print(github_repos_json)
     '''
 
-    return recently_updated_owner_ids
+    return profile_info_pulled
+    # return recently_updated_owner_ids
     return {"DATA RESULTS FROM TABLE": "No data"}, 200
