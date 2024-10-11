@@ -7,6 +7,7 @@ from google.cloud import secretmanager
 
 # keep this code
 def get_pat_from_secret_manager(version_id="latest"):
+    print("STARTING get_pat_from_secret_manager")
     secrets_name = "github-search-secret"
     client = secretmanager.SecretManagerServiceClient()
     project_id = "githubtalent-434920"
@@ -18,6 +19,7 @@ def get_pat_from_secret_manager(version_id="latest"):
 
 # keep this code
 def get_db_credentials_from_secret_manager(version_id="latest"):
+    print("STARTING get_db_credentials_from_secret_manager")
     secrets_name = "database-crud-secret"
     client = secretmanager.SecretManagerServiceClient()
     project_id = "githubtalent-434920"
@@ -27,106 +29,8 @@ def get_db_credentials_from_secret_manager(version_id="latest"):
     return json_payload  # this was validated in form by older script
 
 
-def get_recently_updated_owner_ids(request):
-    # Initialize an empty set to store unique owner IDs
-    recently_updated_owner_ids = set()
-
-    # Get database credentials
-    db_credentials = get_db_credentials_from_secret_manager()
-
-    # Connect to the database
-    connection = psycopg2.connect(
-        host=db_credentials['DB_HOST'],
-        port=db_credentials['DB_PORT'],
-        database=db_credentials['DB_NAME'],
-        user=db_credentials['DB_USER'],
-        password=db_credentials['DB_PASS']
-    )
-
-    try:
-        cursor = connection.cursor()
-
-        # Query to find all repos updated in the last hour
-        query = """
-            SELECT owner_id 
-            FROM github_repos 
-            WHERE updated_at >= NOW() - INTERVAL '1 HOUR';
-        """
-
-        cursor.execute(query)
-        updated_repos = cursor.fetchall()
-
-        # Populate the set with owner_id values from the query results
-        for row in updated_repos:
-            recently_updated_owner_ids.add(row[0])  # row[0] is the owner_id
-
-        cursor.close()
-        connection.close()
-
-        # Return the set as JSON for testing purposes
-        return {"recently_updated_owner_ids": list(recently_updated_owner_ids)}, 200
-
-    except Exception as e:
-        if connection:
-            connection.close()
-        return {"error": str(e)}, 500
-
-
-def get_recent_profile_ids():
-    # Get DB credentials
-    db_credentials = get_db_credentials_from_secret_manager()
-
-    # Connect to the database
-    connection = psycopg2.connect(
-        host=db_credentials['DB_HOST'],
-        port=db_credentials['DB_PORT'],
-        database=db_credentials['DB_NAME'],
-        user=db_credentials['DB_USER'],
-        password=db_credentials['DB_PASS']
-    )
-
-    try:
-        cursor = connection.cursor()
-
-        # SQL query to get distinct owner_logins of repos updated in the last hour
-        query = """
-            SELECT DISTINCT owner_login 
-            FROM github_repos 
-            WHERE updated_at >= NOW() - INTERVAL '1 HOUR';
-        """
-
-        cursor.execute(query)
-        recent_profiles = cursor.fetchall()
-
-        # Convert list of tuples to a set of unique profile IDs
-        profile_ids_set = {row[0] for row in recent_profiles}
-
-        cursor.close()
-        connection.close()
-
-        return profile_ids_set
-
-    except Exception as e:
-        if connection:
-            connection.close()
-        return f"Error querying database: {e}"
-
-
-# need to change this code so it calls for profiles/owners instead of the repos
-def call_github_search(pat: str):
-    url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
-    headers = {
-        "Authorization": f"Bearer {pat}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    http_response_object = requests.get(url,
-                                        headers=headers)  # WARNING, this is coming in as an HTTP response object, not a JSON just yet
-    github_search_results_in_json = http_response_object.json()
-    return github_search_results_in_json
-
-
-# Fairly sure this should stay, because it's a general entry into the DATABASE, not a specific TABLE
-def select_all_from_db(db_credentials):
+def select_all_repos_from_db(db_credentials):
+    print("STARTING select_all_repos_from_db")
     exposed_host = db_credentials['DB_HOST']
     exposed_port = db_credentials['DB_PORT']
     exposed_db_name = db_credentials['DB_NAME']
@@ -156,6 +60,46 @@ def select_all_from_db(db_credentials):
         return f"Connecting to database, due to {reported_error}"
 
 
+def get_recently_updated_owner_ids():
+    print("STARTING get_recently_updated_owner_ids")
+
+    db_credentials_payload = get_db_credentials_from_secret_manager()
+    db_credentials_payload_json = json.loads(db_credentials_payload)
+
+    connection = psycopg2.connect(
+        host=db_credentials_payload_json['DB_HOST'],
+        port=db_credentials_payload_json['DB_PORT'],
+        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
+        user=db_credentials_payload_json['DB_USER'],
+        password=db_credentials_payload_json['DB_PASS']
+    )
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM github_repos")
+    repo_results = cursor.fetchall()
+    cursor.close()
+    connection.close()
+
+    return repo_results
+    return {}
+
+
+# need to change this code so it calls for profiles/owners instead of the repos
+def call_github_search_owners(pat: str):
+    print("INCORRECTLY SEARCHING REPOS INSTEAD OF OWNERS")
+    url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"  # this is wrong, it should hit owners
+    headers = {
+        "Authorization": f"Bearer {pat}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    http_response_object = requests.get(url,
+                                        headers=headers)  # WARNING, this is coming in as an HTTP response object, not a JSON just yet
+    github_search_results_in_json = http_response_object.json()
+    return github_search_results_in_json
+
+
+# Fairly sure this should stay, because it's a general entry into the DATABASE, not a specific TABLE
+
+
 # new maestro
 def update_github_owners(request):
     print("STARTING update_github_owners")
@@ -167,25 +111,17 @@ def update_github_owners(request):
     print("PRINTING pat_payload in JSON: ", pat_json)
 
     retrieved_pat = pat_json["GITHUB_PAT"]  # RETRIEVES value from dictionary entry GITHUB_PAT
-    print("PRINTING retrieved_pat in string format: ")
-    print(retrieved_pat)
+    print("PRINTING retrieved_pat in string format: ", retrieved_pat)
 
-    github_repos_json = call_github_search(retrieved_pat)  # using the stringed PAT key, can we call the github search?
+    recently_updated_owner_ids = get_recently_updated_owner_ids()
+    print("PRINTING recently_updated_owner_ids")
+    print(recently_updated_owner_ids)
+
+    '''synatically correct but strategically redundant. we need to pull repos this fROM SQL and pull OWNERS from github
+    github_repos_json = call_github_search(retrieved_pat) #using the stringed PAT key, can we call the github search?
     print("ATTEMPTED github_repos_json")
     print(github_repos_json)
-
-    '''
-    db_credentials_payload = get_db_credentials_from_secret_manager()
-    db_credentials_payload_json = json.loads(db_credentials_payload)
-
-    connection = psycopg2.connect(
-        host = db_credentials_payload_json['DB_HOST'],
-        port = db_credentials_payload_json['DB_PORT'],
-        database = db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
-        user = db_credentials_payload_json['DB_USER'],
-        password = db_credentials_payload_json['DB_PASS']
-    )
-
     '''
 
+    return recently_updated_owner_ids
     return {"DATA RESULTS FROM TABLE": "No data"}, 200
