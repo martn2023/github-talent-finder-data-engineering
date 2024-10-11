@@ -75,11 +75,19 @@ def get_recently_updated_owner_ids():
     )
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM github_repos")
-    repo_results = cursor.fetchall()
+    repo_results = cursor.fetchall()  # this returns an array, not a JSON
     cursor.close()
     connection.close()
 
-    return repo_results
+    unique_profile_ids = set()
+
+    for repo_result in repo_results:
+        profile_id = str(repo_result[
+                             13])  # fragile code that assumes ordering of columns, where profile id is the 14th column and in integer format so we convert to string
+        unique_profile_ids.add(profile_id)
+
+    unique_profile_ids = list(unique_profile_ids)
+    return unique_profile_ids
     return {}
 
 
