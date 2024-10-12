@@ -5,20 +5,22 @@
 
 # II. What I built/New tech used:
 ## 1. Fully cloud-based ETL pipeline (80%)
-### Data Ingestion
-Runs my scripts in __Google Cloud Function__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions. Stores passwords and API keys in secure and scalable ways using __Google Cloud Secret Manager__ instead of ad hoc environment attributes.
+### Extraction
+Calls Github APIs to ingest data about recently updated repos and their owners' profiles. Runs said scripts in __Google Cloud Function__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions. Stores passwords and API keys in secure and scalable ways using __Google Cloud Secret Manager__ instead of ad hoc environment attributes.
 <br>
 <br>
-### Data Storage
-Runs an expandable database __Google Cloud SQL__, which is no longer limited by a machine's disk space
+### Storage
+Runs an expandable database __Google Cloud SQL__, which is no longer limited by my local machine's disk space. Database credentials safely stored in __Google Cloud Secret Manager__.
 <br>
 <br>
-### Data Preparation
-Begins with simple Pandas/Python script in GCP Functions again where a local solution was constrained by processing power, memory. __BigQuery__ service provides expansion capabilities into large-scale data cleanings and transformations since it's part of GCP 
+### Transformation
+Additional scripts read repo information out of database, transform the data into a fresh list of repo owners to do further extractions on, all on __Google Cloud Function__ for insertion into profile-owner table.   
 <br>
 <br>
 ### Data Visualization
-Uses __Google Cloud Data Studio__ create charts and dashboards
+Uses __BigQuery__ to score repos, identify attractive Github profiles, and loads a charts of:
+* which profiles a recruiter might chase 
+* viable contact methods
 <br>
 <br>
 
