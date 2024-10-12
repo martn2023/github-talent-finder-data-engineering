@@ -4,10 +4,7 @@ import requests
 import logging
 from google.cloud import secretmanager
 
-
-# keep this code
 def get_pat_from_secret_manager(version_id="latest"):
-    print("STARTING get_pat_from_secret_manager")
     secrets_name = "github-search-secret"
     client = secretmanager.SecretManagerServiceClient()
     project_id = "githubtalent-434920"
@@ -16,21 +13,27 @@ def get_pat_from_secret_manager(version_id="latest"):
     json_payload = http_response.payload.data.decode("UTF-8")
     return json_payload
 
-
-# keep this code
 def get_db_credentials_from_secret_manager(version_id="latest"):
-    print("STARTING get_db_credentials_from_secret_manager")
     secrets_name = "database-crud-secret"
     client = secretmanager.SecretManagerServiceClient()
     project_id = "githubtalent-434920"
     name = f"projects/{project_id}/secrets/{secrets_name}/versions/{version_id}"
     http_response = client.access_secret_version(request={"name": name})
     json_payload = http_response.payload.data.decode("UTF-8")
-    return json_payload  # this was validated in form by older script
+    return json_payload #this was validated in form by older script
+
+def call_github_search(pat: str):
+    url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
+    headers = {
+        "Authorization": f"Bearer {pat}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    http_response_object = requests.get(url, headers=headers) #WARNING, this is coming in as an HTTP response object, not a JSON just yet
+    github_search_results_in_json = http_response_object.json()
+    return github_search_results_in_json
 
 
-def select_all_repos_from_db(db_credentials):
-    print("STARTING select_all_repos_from_db")
+def select_all_from_db(db_credentials):
     exposed_host = db_credentials['DB_HOST']
     exposed_port = db_credentials['DB_PORT']
     exposed_db_name = db_credentials['DB_NAME']
@@ -40,156 +43,107 @@ def select_all_repos_from_db(db_credentials):
     # WARNING, THE BELOW ARE RESERVED TERMS
     try:
         attempted_db_connection = psycopg2.connect(
-            host=exposed_host,
-            port=exposed_port,
-            database=exposed_db_name,  # term of art, can't use NAME
-            user=exposed_user,
-            password=exposed_password
+            host = exposed_host,
+            port = exposed_port,
+            database = exposed_db_name, # term of art, can't use NAME
+            user = exposed_user,
+            password = exposed_password
         )
 
-        cursor = attempted_db_connection.cursor()  # need explanation here
-        cursor.execute("SELECT * FROM github_repos;")  # puts the data in the cursor, but still need to get it out
-        rows_of_data = cursor.fetchall()  # we cant rely on cursor anymore, because it demands open connection
+        cursor = attempted_db_connection.cursor() # need explanation here
+        cursor.execute("SELECT * FROM github_repos;") # puts the data in the cursor, but still need to get it out
+        rows_of_data = cursor.fetchall() #we cant rely on cursor anymore, because it demands open connection
 
-        cursor.close()  # ask why this is imperative
-        attempted_db_connection.close()  # ask why this is imperative
+        cursor.close() # ask why this is imperative
+        attempted_db_connection.close() # ask why this is imperative
 
-        return rows_of_data  # this is a list of tuples
+        return rows_of_data # this is a list of tuples
 
     except Exception as reported_error:
         return f"Connecting to database, due to {reported_error}"
 
 
-def get_recently_updated_owner_ids():
-    print("STARTING get_recently_updated_owner_ids")
+def get_github_repos(request):
+    pat_payload = get_pat_from_secret_manager()
+    pat_json = json.loads(pat_payload)
+    retrieved_pat = pat_json["GITHUB_PAT"]
+    github_repos_json = call_github_search(retrieved_pat)
+
+    # looping through our findings, eventually to put in DB
+    ids_array = []
+
+    repos_hash = github_repos_json['items']
+    for individual_repo_info in repos_hash:
+        individual_repo_id = individual_repo_info['id']
+        ids_array.append(individual_repo_id)
+
+    reporting_length = len(ids_array)
+    # [reporting_length,ids_array] # not using for now
 
     db_credentials_payload = get_db_credentials_from_secret_manager()
     db_credentials_payload_json = json.loads(db_credentials_payload)
 
     connection = psycopg2.connect(
-        host=db_credentials_payload_json['DB_HOST'],
-        port=db_credentials_payload_json['DB_PORT'],
-        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
-        user=db_credentials_payload_json['DB_USER'],
-        password=db_credentials_payload_json['DB_PASS']
+        host = db_credentials_payload_json['DB_HOST'],
+        port = db_credentials_payload_json['DB_PORT'],
+        database = db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
+        user = db_credentials_payload_json['DB_USER'],
+        password = db_credentials_payload_json['DB_PASS']
     )
+
     cursor = connection.cursor()
+
+    query = """
+            INSERT INTO github_repos (id, name, owner_login, owner_id, fork, description, size, stargazers_count, watchers_count, updated_at, created_at, url, db_inserted_date, db_updated_date, topics)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s)
+            ON CONFLICT (id) DO UPDATE SET 
+                name = EXCLUDED.name,
+                owner_login = EXCLUDED.owner_login,
+                owner_id = EXCLUDED.owner_id,
+                fork = EXCLUDED.fork,
+                description = EXCLUDED.description,
+                size = EXCLUDED.size,
+                stargazers_count = EXCLUDED.stargazers_count,
+                watchers_count = EXCLUDED.watchers_count,
+                updated_at = EXCLUDED.updated_at,
+                url = EXCLUDED.url,
+                db_updated_date = CURRENT_TIMESTAMP,
+                topics = EXCLUDED.topics
+            """
+
+
+
+    repo_data_for_insertion = []
+    for repo in repos_hash:
+        repo_data = (
+                repo['id'],
+                repo['name'],
+                repo['owner']['login'],
+                repo['owner']['id'],
+                repo['fork'],
+                repo.get('description', 'No description'),
+                repo['size'],
+                repo['stargazers_count'],
+                repo['watchers_count'],
+                repo['updated_at'],
+                repo['created_at'],
+                repo['html_url'],
+                repo['topics']
+            )
+        repo_data_for_insertion.append(repo_data)
+
+    cursor.executemany(query, repo_data_for_insertion) #attempt insertion
+
+    connection.commit() # not sure why
+
+    # begin section on pulling data, after insertions were attempted
     cursor.execute("SELECT * FROM github_repos")
-    repo_results = cursor.fetchall()  # this returns an array, not a JSON
+    results = cursor.fetchall()
     cursor.close()
     connection.close()
 
-    unique_profile_ids = set()
-
-    for repo_result in repo_results:
-        profile_id = str(repo_result[
-                             13])  # fragile code that assumes ordering of columns, where profile id is the 14th column and in integer format so we convert to string
-        # github_username = repo_result[2] # using username and not the stable userID because github's API design
-        unique_profile_ids.add(profile_id)
-
-    unique_profile_ids = list(unique_profile_ids)
-    return unique_profile_ids
+    return {"DATA RESULTS FROM  TABLE": results}, 200
 
 
-# need to change this code so it calls for profiles/owners instead of the repos
-def call_github_search_owners(pat: str, github_profile_number: str):
-    print("NOW FINDING PROFILE INFO BY USERNAME")
-    url = "https://api.github.com/user/" + str(github_profile_number)
-    headers = {
-        "Authorization": f"Bearer {pat}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    http_response_object = requests.get(url,
-                                        headers=headers)  # WARNING, this is coming in as an HTTP response object, not a JSON just yet
-    github_search_results_in_json = http_response_object.json()
-    return github_search_results_in_json
-
-
-# Fairly sure this should stay, because it's a general entry into the DATABASE, not a specific TABLE
-
-def insert_profiles_into_database(profile_info_pulled: list, pat: str):
-    db_credentials_payload = get_db_credentials_from_secret_manager()
-    db_credentials_payload_json = json.loads(db_credentials_payload)
-
-    #
-    connection = psycopg2.connect(
-        host=db_credentials_payload_json['DB_HOST'],
-        port=db_credentials_payload_json['DB_PORT'],
-        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
-        user=db_credentials_payload_json['DB_USER'],
-        password=db_credentials_payload_json['DB_PASS']
-    )
-
-    cursor = connection.cursor()
-
-    # unconditional overwrites deliberately selected given the size of database and size of data in question
-    # notice that there is no code here for timestamping updates, because that's taken care of by the database design
-    insertion_query = """
-        INSERT INTO github_owners (
-            id, login, type, name, company, email, bio, followers, 
-            following, html_url, blog, twitter_username, updated_at
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ON CONFLICT (id) DO UPDATE SET
-            login = EXCLUDED.login,
-            type = EXCLUDED.type,
-            name = EXCLUDED.name,
-            company = EXCLUDED.company,
-            email = EXCLUDED.email,
-            bio = EXCLUDED.bio,
-            followers = EXCLUDED.followers,
-            following = EXCLUDED.following,
-            html_url = EXCLUDED.html_url,
-            blog = EXCLUDED.blog,
-            twitter_username = EXCLUDED.twitter_username,
-            updated_at = EXCLUDED.updated_at;
-        """
-
-    # the imported data should be in list form
-
-    profile_data_list = []
-    for individual_profile_id in profile_info_pulled:
-        profile_info = call_github_search_owners(pat, individual_profile_id)
-
-        profile_data = (
-            profile_info.get('id'),
-            profile_info.get('login'),
-            profile_info.get('type'),
-            profile_info.get('name'),
-            profile_info.get('company'),
-            profile_info.get('email'),
-            profile_info.get('bio'),
-            profile_info.get('followers'),
-            profile_info.get('following'),
-            profile_info.get('html_url'),
-            profile_info.get('blog'),
-            profile_info.get('twitter_username'),
-            profile_info.get('updated_at')
-        )
-
-        profile_data_list.append(profile_data)
-
-    cursor.executemany(insertion_query, profile_data_list)
-    connection.commit()
-
-    return None
-
-
-# new maestro
-def update_github_owners(request):
-    print("STARTING update_github_owners")
-
-    pat_payload = get_pat_from_secret_manager()
-    print("PRINTING pat_payload: ", pat_payload)
-
-    pat_json = json.loads(pat_payload)  # initializes a dictionary
-    print("PRINTING pat_payload in JSON: ", pat_json)
-
-    retrieved_pat = pat_json["GITHUB_PAT"]  # RETRIEVES value from dictionary entry GITHUB_PAT
-    print("PRINTING retrieved_pat in string format: ", retrieved_pat)
-
-    recently_updated_owner_ids = get_recently_updated_owner_ids()
-    insert_profiles_into_database(recently_updated_owner_ids, retrieved_pat)  # no need for a returned value
-
-    return recently_updated_owner_ids
-
+    #full_table_data = select_all_from_db(db_credentials)
+    #return full_table_data
