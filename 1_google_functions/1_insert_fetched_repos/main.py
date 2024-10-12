@@ -107,6 +107,73 @@ def call_github_search_owners(pat: str, github_profile_number: str):
 
 # Fairly sure this should stay, because it's a general entry into the DATABASE, not a specific TABLE
 
+def insert_profiles_into_database(profile_info_pulled: list, pat: str):
+    db_credentials_payload = get_db_credentials_from_secret_manager()
+    db_credentials_payload_json = json.loads(db_credentials_payload)
+
+    #
+    connection = psycopg2.connect(
+        host=db_credentials_payload_json['DB_HOST'],
+        port=db_credentials_payload_json['DB_PORT'],
+        database=db_credentials_payload_json['DB_NAME'],  # term of art, can't use NAME
+        user=db_credentials_payload_json['DB_USER'],
+        password=db_credentials_payload_json['DB_PASS']
+    )
+
+    cursor = connection.cursor()
+
+    # unconditional overwrites deliberately selected given the size of database and size of data in question
+    # notice that there is no code here for timestamping updates, because that's taken care of by the database design
+    insertion_query = """
+        INSERT INTO github_owners (
+            id, login, type, name, company, email, bio, followers, 
+            following, html_url, blog, twitter_username, updated_at
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (id) DO UPDATE SET
+            login = EXCLUDED.login,
+            type = EXCLUDED.type,
+            name = EXCLUDED.name,
+            company = EXCLUDED.company,
+            email = EXCLUDED.email,
+            bio = EXCLUDED.bio,
+            followers = EXCLUDED.followers,
+            following = EXCLUDED.following,
+            html_url = EXCLUDED.html_url,
+            blog = EXCLUDED.blog,
+            twitter_username = EXCLUDED.twitter_username,
+            updated_at = EXCLUDED.updated_at;
+        """
+
+    # the imported data should be in list form
+
+    profile_data_list = []
+    for individual_profile_id in profile_info_pulled:
+        profile_info = call_github_search_owners(pat, individual_profile_id)
+
+        profile_data = (
+            profile_info.get('id'),
+            profile_info.get('login'),
+            profile_info.get('type'),
+            profile_info.get('name'),
+            profile_info.get('company'),
+            profile_info.get('email'),
+            profile_info.get('bio'),
+            profile_info.get('followers'),
+            profile_info.get('following'),
+            profile_info.get('html_url'),
+            profile_info.get('blog'),
+            profile_info.get('twitter_username'),
+            profile_info.get('updated_at')
+        )
+
+        profile_data_list.append(profile_data)
+
+    cursor.executemany(insertion_query, profile_data_list)
+    connection.commit()
+
+    return None
+
 
 # new maestro
 def update_github_owners(request):
@@ -122,15 +189,7 @@ def update_github_owners(request):
     print("PRINTING retrieved_pat in string format: ", retrieved_pat)
 
     recently_updated_owner_ids = get_recently_updated_owner_ids()
+    insert_profiles_into_database(recently_updated_owner_ids, retrieved_pat)  # no need for a returned value
 
-    profile_info_pulled = call_github_search_owners(retrieved_pat, "36039323")
+    return recently_updated_owner_ids
 
-    '''synatically correct but strategically redundant. we need to pull repos this fROM SQL and pull OWNERS from github
-    github_repos_json = call_github_search(retrieved_pat) #using the stringed PAT key, can we call the github search?
-    print("ATTEMPTED github_repos_json")
-    print(github_repos_json)
-    '''
-
-    return profile_info_pulled
-    # return recently_updated_owner_ids
-    return {"DATA RESULTS FROM TABLE": "No data"}, 200
