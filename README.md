@@ -1,12 +1,18 @@
 # I. Author's context:
 - While doing 2 data analytics projects, I pulled data local machine on an ad hoc basis. That approach lacked the
- - 1. automation
- - 2. reliability
- - 3. scalability
- - 4. integration ease
- - 5. security needed for a continuous data streams.
+  - automation
+  - reliability
+  - scalability
+  - integration ease
+  - security needed for a continuous data streams
+
+
 - This __data engineering__ project resolves all concerns by __upgrading to a 100% cloud-hosted solution__.
+
+
 - This is my first experience with a major cloud platform e.g. AWS, Azure, GCP
+
+
 - The resulting tool helps technical recruiters identify candidates with relevant GitHub repos.
 
 # II. What I built/New tech used:
