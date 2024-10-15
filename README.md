@@ -67,25 +67,24 @@ that have relevant skills, but other recruiters haven't seen yet.
 
 Google Run executes my script, calling a GitHub API to extract information about repos updated within a 60-second timeframe
 ![img_2.png](img_2.png)
-
-
-
+<br>
+<br>
+<br>
 These are the repos store in a PostGres database on Google Cloud SQL
 ![img_1.png](img_1.png)
-
-
-
+<br>
+<br>
+<br>
 A second script now extract repo OWNER data
 ![img_3.png](img_3.png)
-
-
-
+<br>
+<br>
+<br>
 Instead of storing credentials on my local machine's environment, I store database passwords and GitHub's authentication tokens in GCP Secret Manager.
 ![img_4.png](img_4.png)
-
-
-
-
+<br>
+<br>
+<br>
 # V. Learnings:
 - I had to go through 4 different project ideas/data sources before I could find one where I wasn't limited by the scope of data, the volume of hits permitted, and the financial cost
 - I built static web sites in the 1990s when deployment was a lot simpler. Publishing a web site to the web was simplying drag-and-dropping files into an FTP server, so I had trouble envisioning how modern day DevOps was a full-time job. That changed as soon I opened up Google Cloud Platform and started reading the summaries.
