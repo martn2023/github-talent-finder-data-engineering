@@ -6,42 +6,40 @@
 # II. What I built/New tech used:
 ## 1. Fully cloud-based ETL pipeline (80%)
 ### Extraction
-Calls Github APIs to ingest data about recently updated repos and their owners' profiles. Runs said scripts in __Google Cloud Function__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions. Stores passwords and API keys in secure and scalable ways using __Google Cloud Secret Manager__ instead of ad hoc environment attributes.
+Separate processes each calls different GitHub APIs to ingest data about recently updated repos and their owners' profiles. Runs said scripts in __Google Cloud Function__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions.
+
+Stores passwords and API keys in secure and scalable ways using __Google Cloud Secret Manager__ instead of ad hoc environment attributes.
 <br>
 <br>
 ### Storage
-Runs an expandable database __Google Cloud SQL__, which is no longer limited by my local machine's disk space. Database credentials safely stored in __Google Cloud Secret Manager__.
+Runs an expandable Postgres database in __Google Cloud SQL__, which is no longer limited by my local machine's disk space.
+
+Database credentials safely stored in __Google Cloud Secret Manager__.
 <br>
 <br>
 ### Transformation
-Additional scripts read repo information out of database, transform the data into a fresh list of repo owners to do further extractions on, all on __Google Cloud Function__ for insertion into profile-owner table.   
+SQL scripts read repo information out of database, transform the data with lead-scoring, and creates a list of repo owners/authors to approach.   
 <br>
 <br>
-### Data Visualization
-Uses __BigQuery__ to score repos, identify attractive Github profiles, and loads a charts of:
+### Load/Data Visualization
+In current rendition, loads grids for:
 * which profiles a recruiter might chase 
 * viable contact methods
+
+At scale, will consider __BigQuery__ for larger datasets and __Looker Studio__ for more complex visualizations.
+
 <br>
 <br>
 
 ### Automated Task Management
+
+## 2.Automation (20%)
 Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule and handle transient failures
-<br>
-<br>
-## 2. Leveraging resulting data (20%)
-### Dashboards
-Uses __Graphana__ for real-time data visualization without uptime concerns
-<br>
-<br>
-### Data Analysis
-- Which are topics were most updated in the last 30 days?
-- How does this compare with what people are appreciating through stars?
-- Which engineers appear to be the ripest, underrated, and approachable candidates?
-- Do repo updates spike during a certain time(s) of day?
+
 <br>
 <br>
 
-# III. Defining "good" engineers:
+# III. Defining "good" engineers (just an illustration, not set in stone):
 1. have relevant repos:
    a) tags match my searched keywords e.g. "machine learning"
    b) repo was updated recently
@@ -57,28 +55,30 @@ Uses __Graphana__ for real-time data visualization without uptime concerns
 that have relevant skills, but other recruiters haven't seen yet.
 
 # IV. Screenshots (illustrative, but not comprehensive):
-Findings are presented in screenshots below:
 
 
 # V. Learnings:
-- In Postgres databases, INSERTING unique values that were already in the db won't work. Contrary to intuition, the solution is not using Python Try/Except's; SQL has an "ON CONFLICT" term.
-- Databases follow A.C.I.D laws that are hard-coded into relational databases' technology:
-  - Atomicity: All-or-none, like a trade order on the stock market
-  - Consistency: If you violate a formatting or other rule, the changes won't go through
-  - Isolation: Transactions are sequential instead of concurrent (only 1 kid at a time is allowed to put his hand in the bag of candy)
-  - Durability: Data remains even after a crash
+- I had to go through 4 different project ideas/data sources before I could find one where I wasn't limited by the scope of data, the volume of hits permitted, and the financial cost
+- I built static web sites in the 1990s when deployment was a lot simpler. Publishing a web site to the web was simplying drag-and-dropping files into an FTP server, so I had trouble envisioning how modern day DevOps was a full-time job. That changed as soon I opened up Google Cloud Platform and started reading the summaries.
+- To a non-technical, I wish someone would have explained AWS/GCP to me as the "GoogleSuite of DevOps". That would have helped me contextualize this a lot faster.
+- There are waaaaay more configurations than I could have possibly imagined, I would have been helpless without ChatGPT to guide me
+- In GoogleSuite, users don't need to manually link modules together and set permissions. That's not the case in GCP.
 - Serverless tools like Google Cloud Function have no "preview" button, forcing long wait times between source code iterations
 - So many challenges getting the Google Cloud Function to read database from Google Cloud SQL:
   - adding role + permissions
   - adding firewall
   - swapping to postgres from mysql, and the port that goes with it
-- Google Scheduler has no way of storing variables, so I'll eventually give it a start time and handle incrementing times with the API call script
-- 
+- Google Scheduler has no way of storing variables, which could be problematic for having the right start times on API searches. One way I could solve this is by storing dates in a database table.
+
 # VI. Potential improvements:
 >**Product/UI:**<br>
-- This was run on a budget. With the larger needs and budget of a Big Tech employer, we could have done grabbed more videos (searching further back in time) or grabbed videos about even more topics, for example:<br>
-  - every single politician running for a presidency, governorship, senate seat, house rep, or mayoral position<br>
-  - spread across every most countries
+- The priority behind this project was to prove technical feasibility, not product quality or engineering extensibility i.e. get a simple ETL working in the cloud ASAP. Given enough time, I would have had a far more complex lead-scoring system
+- Totally impractical today, but eventually I could integrate this with an interactive web site where users could select keywords, set their own groupings, and filters. For example, maybe a user wants to see any repo authors with the topic tag "Minecraft"
+- We could add word clustering e.g. a recruiter searches for repos demonstrating "AI" and my tool catches repos with "Artificial Intelligence". Now we need to debate on whether such a generic term should also catch specifics "Machine Learning", "ML", and "computer vision"
+
+>**Engineering:**<br>
+- Functions can and should be refactored to be more segregated and modular. For example, it might make sense to split the first function up across multiple files where one dedicated file is for Secret Manager to retrieve the Personal Authentication token.
 
 >**Tools**<br>
-- Introd
+- BigQuery
+- Looker Studio (formerly known as GCP Data Studio and not to be confused with Looker BI, which is more enterprise)
