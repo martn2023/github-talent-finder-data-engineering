@@ -6,7 +6,7 @@
 # II. What I built/New tech used:
 ## 1. Fully cloud-based ETL pipeline (80%)
 ### Extraction
-Separate processes each calls different GitHub APIs to ingest data about recently updated repos and their owners' profiles. Runs said scripts in __Google Cloud Function__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions.
+Separate processes each calls different GitHub APIs to ingest data about recently updated repos and their owners' profiles. Runs said scripts in __Google Cloud Run__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions.
 
 Stores passwords and API keys in secure and scalable ways using __Google Cloud Secret Manager__ instead of ad hoc environment attributes.
 <br>
@@ -56,6 +56,22 @@ that have relevant skills, but other recruiters haven't seen yet.
 
 # IV. Screenshots (illustrative, but not comprehensive):
 
+Google Run executes my script, calling a GitHub API to extract information about repos updated within a 60-second timeframe
+![img_2.png](img_2.png)
+
+
+These are the repos store in a PostGres database on Google Cloud SQL
+![img_1.png](img_1.png)
+
+
+A second script now extract repo OWNER data
+![img_3.png](img_3.png)
+
+
+Instead of storing credentials on my local machine's environment, I store database passwords and GitHub's authentication tokens in GCP Secret Manager.
+![img_4.png](img_4.png)
+
+
 
 # V. Learnings:
 - I had to go through 4 different project ideas/data sources before I could find one where I wasn't limited by the scope of data, the volume of hits permitted, and the financial cost
@@ -78,6 +94,8 @@ that have relevant skills, but other recruiters haven't seen yet.
 
 >**Engineering:**<br>
 - Functions can and should be refactored to be more segregated and modular. For example, it might make sense to split the first function up across multiple files where one dedicated file is for Secret Manager to retrieve the Personal Authentication token.
+- It was tedious testing out my code inside of GCP because of the delays from re-deploying Cloud Run
+
 
 >**Tools**<br>
 - BigQuery
