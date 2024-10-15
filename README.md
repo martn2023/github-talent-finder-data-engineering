@@ -15,6 +15,7 @@
 
 - The resulting tool helps technical recruiters identify candidates with relevant GitHub repos.
 
+
 # II. What I built/New tech used:
 ## 1. Fully cloud-based ETL pipeline (80%)
 ### Extraction
@@ -66,19 +67,19 @@ that have relevant skills, but other recruiters haven't seen yet.
 
 Google Run executes my script, calling a GitHub API to extract information about repos updated within a 60-second timeframe
 ![img_2.png](img_2.png)
-
+<br>
 
 These are the repos store in a PostGres database on Google Cloud SQL
 ![img_1.png](img_1.png)
-
+<br>
 
 A second script now extract repo OWNER data
 ![img_3.png](img_3.png)
-
+<br>
 
 Instead of storing credentials on my local machine's environment, I store database passwords and GitHub's authentication tokens in GCP Secret Manager.
 ![img_4.png](img_4.png)
-
+<br>
 
 
 # V. Learnings:
