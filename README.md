@@ -1,5 +1,5 @@
 # I. Author's context:
-- While doing 2 data analytics projects, I pulled data local machine on an ad hoc basis. That approach lacked the
+- While doing 2 data analytics projects, I pulled data local machine on an ad hoc basis. Although the ETL projects successfully retrieved the data, they would lack attributes required in real world settings:
   - automation
   - reliability
   - scalability
@@ -7,7 +7,7 @@
   - security needed for a continuous data streams
 
 
-- This __data engineering__ project resolves all concerns by __upgrading to a 100% cloud-hosted solution__.
+- This __data engineering__ project resolves the above concerns by building a different ETL and __upgrading to a 100% cloud-hosted solution__.
 
 
 - This is my first experience with a major cloud platform e.g. AWS, Azure, GCP

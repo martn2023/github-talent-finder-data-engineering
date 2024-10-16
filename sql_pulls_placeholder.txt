@@ -1,0 +1,61 @@
+#has a loose scoring of repos
+
+SELECT *
+FROM github_repos
+WHERE
+  array_length(topics, 1) <= 15
+  AND primary_coding_language IN ('Java', 'mcfunction')
+  AND size >= 800
+  AND stargazers_count BETWEEN 3 AND 10;
+
+
+
+# finds UNIQUE owner profiles based on the above search
+
+SELECT
+  DISTINCT
+ON
+  (login) *
+FROM
+  github_owners
+WHERE
+  login IN (
+  SELECT
+    owner_login
+  FROM
+    github_repos
+  WHERE
+    ARRAY_LENGTH(topics, 1) <= 15
+    AND primary_coding_language IN ('Java',
+      'mcfunction')
+    AND size >= 800
+    AND stargazers_count BETWEEN 3
+    AND 10 );
+
+
+    # now we are adding some filters so we know these people are desireable, but not TOO desireable!
+
+    SELECT
+  DISTINCT
+ON
+  (login) *
+FROM
+  github_owners
+WHERE
+  login IN (
+  SELECT
+    owner_login
+  FROM
+    github_repos
+  WHERE
+    ARRAY_LENGTH(topics, 1) <= 15
+    AND primary_coding_language IN ('Java',
+      'mcfunction')
+    AND size >= 800
+    AND stargazers_count BETWEEN 3
+    AND 10 )
+
+
+  AND type = 'User'
+
+  AND (followers BETWEEN 1 AND 100)
