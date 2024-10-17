@@ -92,7 +92,8 @@ Above scripts are set to run automatically on the hour via Google Cloud Schedule
 <br>
 <br>
 Loading search results from some just-for-fun configurations<br>
-![img_5.png](img_5.png)
+![img_8.png](img_8.png)
+
 <br>
 <br>
 <br>
