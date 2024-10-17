@@ -87,7 +87,7 @@ Instead of storing credentials on my local machine's environment, I store databa
 <br>
 
 Above scripts are set to run automatically on the hour via Google Cloud Scheduler<br>
-![img_7.png](img_7.png)
+![img.png](img.png)
 <br>
 <br>
 <br>
