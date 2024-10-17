@@ -86,8 +86,8 @@ Instead of storing credentials on my local machine's environment, I store databa
 <br>
 <br>
 
-Above scripts are set to run automatically via Google Cloud Scheduler<br>
-![img_6.png](img_6.png)
+Above scripts are set to run automatically on the hour via Google Cloud Scheduler<br>
+![img_7.png](img_7.png)
 <br>
 <br>
 <br>
