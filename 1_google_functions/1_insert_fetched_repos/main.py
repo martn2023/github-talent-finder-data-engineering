@@ -46,24 +46,44 @@ def call_github_search(pat: str):
             password=db_credentials['DB_PASS']
         )
 
-        connection.close()
-        print("PRINTING connection closed")
+        print("PRINTING connection temporarily opened!")
 
     except:
-        print("PRINTING connection NOT made")
+        print("PRINTING connection FAILED creation")
+
+    try:
+        cursor = connection.cursor()
+        print("PRINTING cursor opened!")
+    except Exception as e:
+        print("PRINTING cursor FAILED to formed!")
+        print(f"Cursor failed to form: {e}")
+
+    try:
+        cursor.execute("SELECT last_call FROM task_scheduling WHERE function_name = %s;", ("scheduled_get_repos",))
+        print("PRINTING cursor executed")
+    except:
+        print("PRINTING cursor FAILED to execute")
+
+    try:
+        last_call_time = cursor.fetchone()[0]
+        print("PRINTING time object pulled")
+        try:
+            print(last_call_time)
+        except:
+            pass
+
+    except:
+        print("PRINTING time object FAILED to yank")
+
+    try:
+        cursor.close()
+        print("PRINTING cursor successfully closed")
+    except:
+        print("PRINTING cursor FAILED!")
 
     '''
 
-    cursor = connection.cursor()
-    cursor.execute("SELECT last_call FROM task_scheduling WHERE function_name = %s;", ("scheduled_get_repos",))
-
-
     this is the part that will take the call time out of the 3rd table
-    last_call_time = cursor.fetchone()[0]
-
-    cursor.close()
-
-    print("PRINTING connection and cursor closed")
 
 
     #last_call_time_string = "2024-10-13T00:00:00Z"
@@ -77,6 +97,8 @@ def call_github_search(pat: str):
     end_time = next_call_time.strftime("%Y-%m-%dT%H:%M:%S")
 
     '''
+
+    connection.close()
 
     try:
         url = f"https://api.github.com/search/repositories?q=pushed%3A{start_time}..{end_time}+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
