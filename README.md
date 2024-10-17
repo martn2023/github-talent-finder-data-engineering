@@ -104,6 +104,10 @@ Loading search results from some just-for-fun configurations<br>
   - adding firewall
   - swapping to postgres from mysql, and the port that goes with it
 - Google Scheduler has no way of storing variables, which could be problematic for having the right start times on API searches. One way I could solve this is by storing dates in a database table.
+- COST CONSIDERATIONS: This was the first time I had to really consider money as a decision-making factor. There are 2 factors at play A) how many search results GitHub APIs can hit at once, limited to 1000 and B) the fact that Scheduler lets me do only 93 tasks a month before before they start charging me $0.10 for 31 tasks. In a utopian scenario, I would have searched every minute of every hour of every day going back to the start of 2024. It would have been about 60 repos a minute or 4000 repos (more than the 1000 limit) an hour. If we did a minute-wide search, that would be
+  - 1 job/min * 60 minutes * 24 hours = 1440 jobs/day
+  - 1440 jobs/day * 30 days/month = 43,200
+  - (43,200 - 93 freebies ) / 31 tasks * $0.10 = $ 139.60 credits burned per month, which is unacceptable given my GCP credit allotment was only $300
 
 # VI. Potential improvements:
 >**Product/UI:**<br>
