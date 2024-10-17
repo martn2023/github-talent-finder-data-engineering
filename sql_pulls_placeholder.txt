@@ -58,3 +58,33 @@ WHERE
 
   AND type = 'User'
   AND (followers BETWEEN 1 AND 100)
+
+
+
+
+ # this looks at Rust now too
+
+ SELECT
+  DISTINCT
+ON
+  (login) *
+FROM
+  github_owners
+WHERE
+  login IN (
+  SELECT
+    owner_login
+  FROM
+    github_repos
+  WHERE
+    ARRAY_LENGTH(topics, 1) <= 15
+    AND primary_coding_language IN ('Java',
+      'mcfunction','Rust')
+    AND size >= 800
+    AND stargazers_count BETWEEN 3
+    AND 10
+    AND fork = FALSE)
+
+  AND type = 'User'
+  AND (followers BETWEEN 1 AND 100)
+
