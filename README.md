@@ -86,11 +86,18 @@ Instead of storing credentials on my local machine's environment, I store databa
 <br>
 <br>
 
+Above scripts are set to run automatically via Google Cloud Scheduler<br>
+![img_6.png](img_6.png)
+<br>
+<br>
+<br>
 Loading search results from some just-for-fun configurations<br>
 ![img_5.png](img_5.png)
 <br>
 <br>
 <br>
+
+
 
 # V. Learnings:
 - I had to go through 4 different project ideas/data sources before I could find one where I wasn't limited by the scope of data, the volume of hits permitted, and the financial cost
