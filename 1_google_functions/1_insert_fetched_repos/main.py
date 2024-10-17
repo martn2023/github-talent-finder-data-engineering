@@ -27,13 +27,13 @@ def get_db_credentials_from_secret_manager(version_id="latest"):
 
 
 def call_github_search(pat: str):
-    db_credentials = get_db_credentials_from_secret_manager()
+    db_credentials_not_json = get_db_credentials_from_secret_manager()
+    db_credentials = json.loads(db_credentials_not_json)
     print("PRINTING db_credentials")
     print(db_credentials)
 
     # intentionally leaving potentially duplicative code in here until I prove the automation works
 
-    '''
     connection = psycopg2.connect(
         host=db_credentials['DB_HOST'],
         port=db_credentials['DB_PORT'],
@@ -41,17 +41,21 @@ def call_github_search(pat: str):
         user=db_credentials['DB_USER'],
         password=db_credentials['DB_PASS']
     )
-    cursor = connection.cursor()
-    cursor.execute("SELECT last_call FROM task_scheduling WHERE function_name = %s;", ("scheduled_get_repos",))
 
+    print("PRINTING connection made")
+    # print(connection)
+    # connection.close()
+    print("PRINTING connection closed")
 
-    #this is the part that will take the call time out of the 3rd table
-    last_call_time = cursor.fetchone()[0]
+    # cursor = connection.cursor()
+    # cursor.execute("SELECT last_call FROM task_scheduling WHERE function_name = %s;", ("scheduled_get_repos",))
 
-    cursor.close()
-    connection.close()
+    # this is the part that will take the call time out of the 3rd table
+    # last_call_time = cursor.fetchone()[0]
 
-    '''
+    # cursor.close()
+
+    print("PRINTING connection and cursor closed")
 
     last_call_time_string = "2024-10-13T00:00:00Z"
     last_call_time = datetime.strptime(last_call_time_string, "%Y-%m-%dT%H:%M:%SZ")
@@ -67,7 +71,7 @@ def call_github_search(pat: str):
     print("proposed url")
     print(url)
 
-    url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
+    # url = "https://api.github.com/search/repositories?q=pushed%3A2024-09-01T00%3A00%3A00..2024-09-01T00%3A01%3A00+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
 
     headers = {
         "Authorization": f"Bearer {pat}",
@@ -79,6 +83,7 @@ def call_github_search(pat: str):
     return github_search_results_in_json
 
 
+# this code is likely obsolete now
 def select_all_from_db(db_credentials):
     exposed_host = db_credentials['DB_HOST']
     exposed_port = db_credentials['DB_PORT']
