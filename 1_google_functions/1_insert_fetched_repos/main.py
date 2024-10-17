@@ -32,8 +32,6 @@ def call_github_search(pat: str):
 
     db_credentials_not_json = get_db_credentials_from_secret_manager()
     db_credentials = json.loads(db_credentials_not_json)
-    print("PRINTING db_credentials")
-    print(db_credentials)
 
     # intentionally leaving potentially duplicative code in here until I prove the automation works
 
@@ -45,62 +43,35 @@ def call_github_search(pat: str):
             user=db_credentials['DB_USER'],
             password=db_credentials['DB_PASS']
         )
-
         print("PRINTING connection temporarily opened!")
-
     except:
         print("PRINTING connection FAILED creation")
 
-    try:
-        cursor = connection.cursor()
-        print("PRINTING cursor opened!")
-    except Exception as e:
-        print("PRINTING cursor FAILED to formed!")
-        print(f"Cursor failed to form: {e}")
+    cursor = connection.cursor()
+    cursor.execute("SELECT last_call FROM task_scheduling WHERE function_name = %s;", ("scheduled_get_repos",))
 
-    try:
-        cursor.execute("SELECT last_call FROM task_scheduling WHERE function_name = %s;", ("scheduled_get_repos",))
-        print("PRINTING cursor executed")
-    except:
-        print("PRINTING cursor FAILED to execute")
+    current_call_time = cursor.fetchone()[0]
 
-    try:
-        # this is the part that will take the call time out of the 3rd table
-        last_call_time = cursor.fetchone()[0]
-        print("PRINTING time object pulled")
-        print(last_call_time)
-        print(type(last_call_time))
-    except:
-        print("PRINTING time object FAILED to yank")
+    current_end_time = current_call_time + timedelta(
+        minutes=1)  # we are only adding 1 minute at a time to get ~70 results per search. If we had done a full hour, it would be 5000 hits, well over the 1000 result limit set by GitHub API
 
-    try:
-        next_call_time = last_call_time + timedelta(minutes=1)
-        start_time = last_call_time.strftime("%Y-%m-%dT%H:%M:%S")
-        end_time = next_call_time.strftime(
-            "%Y-%m-%dT%H:%M:%S")  # we are only adding 1 minute at a time to get ~70 results per search. If we had done a full hour, it would be 5000 hits, well over the 1000 result limit set by GitHub API
-        print("PRINTING conversions done!")
-    except:
-        print("PRINTING time conversions FAILED")
+    start_time = current_call_time.strftime("%Y-%m-%dT%H:%M:%S")
 
-    try:
-        cursor.close()
-        print("PRINTING cursor successfully closed")
-    except:
-        print("PRINTING cursor FAILED!")
+    end_time = current_end_time.strftime("%Y-%m-%dT%H:%M:%S")
 
-    '''
-    #last_call_time_string = "2024-10-13T00:00:00Z"
-    #last_call_time = datetime.strptime(last_call_time_string, "%Y-%m-%dT%H:%M:%SZ")    
-    '''
+    next_call_time = current_call_time + timedelta(hours=1)
 
+    # replacing the search window with an incremented search window in the database
+    cursor.execute(
+        "UPDATE task_scheduling SET last_call = %s WHERE function_name = %s;",
+        (next_call_time, "scheduled_get_repos")
+    )
+    connection.commit()
+
+    cursor.close()
     connection.close()
 
-    try:
-        url = f"https://api.github.com/search/repositories?q=pushed%3A{start_time}..{end_time}+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
-        print("PRINTING url successfully changed!!!!!!")
-    except:
-        print("PRINTING exception, url unchanged")
-
+    url = f"https://api.github.com/search/repositories?q=pushed%3A{start_time}..{end_time}+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
     headers = {
         "Authorization": f"Bearer {pat}",
         "Accept": "application/vnd.github.v3+json"
@@ -182,7 +153,7 @@ def get_github_repos(request):
 
     cursor.executemany(query, repo_data_for_insertion)  # attempt insertion
 
-    connection.commit()  # not sure why
+    connection.commit()  # this is your SUBMIT button
 
     # begin section on pulling data, after insertions were attempted
     cursor.execute("SELECT * FROM github_repos")
@@ -191,9 +162,6 @@ def get_github_repos(request):
     connection.close()
 
     return {"DATA RESULTS FROM  TABLE": results}, 200
-
-    # full_table_data = select_all_from_db(db_credentials)
-    # return full_table_data
 
 
 ''' this code is likely obsolete now but keep it for debugging purposes
