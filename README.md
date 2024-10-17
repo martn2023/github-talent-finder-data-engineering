@@ -86,7 +86,7 @@ Instead of storing credentials on my local machine's environment, I store databa
 <br>
 <br>
 
-Above scripts are set to run automatically on the hour via Google Cloud Scheduler<br>
+Google Cloud Scheduler handles helps extract new repos every hour, and ties them to proper GitHub profiles once per day at 5AM EST.
 ![img.png](img.png)
 <br>
 <br>
