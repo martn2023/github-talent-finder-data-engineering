@@ -65,15 +65,22 @@ def call_github_search(pat: str):
         print("PRINTING cursor FAILED to execute")
 
     try:
+        # this is the part that will take the call time out of the 3rd table
         last_call_time = cursor.fetchone()[0]
         print("PRINTING time object pulled")
-        try:
-            print(last_call_time)
-        except:
-            pass
-
+        print(last_call_time)
+        print(type(last_call_time))
     except:
         print("PRINTING time object FAILED to yank")
+
+    try:
+        next_call_time = last_call_time + timedelta(minutes=1)
+        start_time = last_call_time.strftime("%Y-%m-%dT%H:%M:%S")
+        end_time = next_call_time.strftime(
+            "%Y-%m-%dT%H:%M:%S")  # we are only adding 1 minute at a time to get ~70 results per search. If we had done a full hour, it would be 5000 hits, well over the 1000 result limit set by GitHub API
+        print("PRINTING conversions done!")
+    except:
+        print("PRINTING time conversions FAILED")
 
     try:
         cursor.close()
@@ -82,26 +89,15 @@ def call_github_search(pat: str):
         print("PRINTING cursor FAILED!")
 
     '''
-
-    this is the part that will take the call time out of the 3rd table
-
-
     #last_call_time_string = "2024-10-13T00:00:00Z"
-    last_call_time = datetime.strptime(last_call_time_string, "%Y-%m-%dT%H:%M:%SZ")
-
-    #we are only adding 1 minute at a time to get ~70 results per search. If we had done a full hour, it would be 5000 hits, well over the 1000 result limit set by GitHub API
-    next_call_time = last_call_time + timedelta(minutes=1)
-
-    # reformatting for API URL
-    start_time = last_call_time.strftime("%Y-%m-%dT%H:%M:%S")
-    end_time = next_call_time.strftime("%Y-%m-%dT%H:%M:%S")
-
+    #last_call_time = datetime.strptime(last_call_time_string, "%Y-%m-%dT%H:%M:%SZ")    
     '''
 
     connection.close()
 
     try:
         url = f"https://api.github.com/search/repositories?q=pushed%3A{start_time}..{end_time}+is%3Apublic+-fork%3Atrue&per_page=100&page=1"
+        print("PRINTING url successfully changed!!!!!!")
     except:
         print("PRINTING exception, url unchanged")
 
