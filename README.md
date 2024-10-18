@@ -68,7 +68,13 @@ Assume the customer is a technical recruiter on the hunt for __Minecraft game de
 
 # IV. Screenshots (illustrative, but not comprehensive):
 
-Google Run executes my script, calling a GitHub API to extract information about repos updated within a 60-second timeframe<br>
+Wrote scripts to call APIs and extract information about GitHub recently updated repos (search window of 60 seconds) and their owners<br>
+![img.png](readme_media/img9.png)
+<br>
+<br>
+<br>
+
+Google Run executes my scripts<br>
 ![img_2.png](readme_media/img_2.png)
 <br>
 <br>
