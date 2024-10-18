@@ -68,41 +68,40 @@ Assume the customer is a technical recruiter on the hunt for __Minecraft game de
 
 # IV. Screenshots (illustrative, but not comprehensive):
 
-Wrote scripts to call APIs and extract information about GitHub recently updated repos (search window of 60 seconds) and their owners<br>
+__Wrote scripts to call APIs and extract information about GitHub recently updated repos (search window of 60 seconds) and their owners__<br> 
 ![img.png](readme_media/img9.png)
 <br>
 <br>
 <br>
 
-Google Run executes my scripts<br>
+__Google Run executes my scripts__<br>
 ![img_2.png](readme_media/img_2.png)
 <br>
 <br>
 <br>
-These are the repos store in a PostGres database on Google Cloud SQL<br>
+__These are the repos store in a PostGres database on Google Cloud SQL__<br>
 ![img_1.png](readme_media/img_1.png)
 <br>
 <br>
 <br>
-A second script now extract repo OWNER data<br>
+__A second script now extract repo OWNER data__<br>
 ![img_3.png](readme_media/img_3.png)
 <br>
 <br>
 <br>
-Instead of storing credentials on my local machine's environment, I store database passwords and GitHub's authentication tokens in GCP Secret Manager.<br>
+__Instead of storing credentials on my local machine's environment, I store database passwords and GitHub's authentication tokens in GCP Secret Manager.__<br>
 ![img_4.png](readme_media/img_4.png)
 <br>
 <br>
 <br>
 
-Google Cloud Scheduler handles helps extract new repos every hour, and ties them to proper GitHub profiles once per day at 5AM EST.
+__Google Cloud Scheduler handles helps extract new repos every hour, and ties them to proper GitHub profiles once per day at 5AM EST.__<br>
 ![img.png](readme_media/img.png)
 <br>
 <br>
 <br>
-Loading search results from some just-for-fun configurations<br>
+__Loading search results from some just-for-fun configurations__<br>
 ![img_8.png](readme_media/img_8.png)
-
 <br>
 <br>
 <br>
