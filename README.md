@@ -49,10 +49,13 @@ Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule
 <br>
 
 # III. Methodology (illustrative example) for discovering talent:
-1. have relevant repos, for example if I was looking for a Minecraft developer:
-   1. topics tagged should include "minecraft", but most repos don't even have tags
-   2. repos are ignored if over 25 topics are tagged, to block repos that are gaming the system or have trouble prioritizing in their communication. Google uses this same threshold for their Careers web site 
-   2. Since most repos don't even use manual topic tags, we can look at primary language "mcfunction" as a surefire way to know the repo is focused on Minecraft
+Assume the customer is a technical recruiter on the hunt for __Minecraft game developers__.
+
+1. have suitable repos:
+   1. with 1 of 2 signals for topic relevance, either:
+      1. topics tagged should include "minecraft", but most repos don't even have tags 
+      2. Since most repos don't even use manual topic tags, we can look at primary language "mcfunction" as a surefire way to know the repo is focused on Minecraft
+   2. repos are ignored if over 25 topics are tagged, to block repos that are gaming the system or have trouble prioritizing in their communication. Google uses this same threshold for their Careers web site
    3. The repo has at least 30 commits and a file size of at least 1 megabyte, to show some level of intensity
    4. Updated within the last 6 months, so we know the skills are fresh
    5. External validation in the form of +3 stars
