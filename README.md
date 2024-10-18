@@ -48,20 +48,20 @@ Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule
 <br>
 <br>
 
-# III. Defining "good" engineers (just an illustration, not set in stone):
-1. have relevant repos:
-   a) tags match my searched keywords e.g. "machine learning"
-   b) repo was updated recently
-   c) repo has at least 10 commits, a minimum file size, and was created at least 4 days ago, as a heuristic for intensity and depth 
-   d) repo is externally validated by at least 1 star
+# III. Methodology (illustrative example) for discovering talent:
+1. have relevant repos, for example if I was looking for a Minecraft developer:
+   1. topics tagged should include "minecraft", but most repos don't even have tags
+   2. repos are ignored if over 25 topics are tagged, to block repos that are gaming the system or have trouble prioritizing in their communication. Google uses this same threshold for their Careers web site 
+   2. Since most repos don't even use manual topic tags, we can look at primary language "mcfunction" as a surefire way to know the repo is focused on Minecraft
+   3. The repo has at least 30 commits and a file size of at least 1 megabyte, to show some level of intensity
+   4. Updated within the last 6 months, so we know the skills are fresh
+   5. External validation in the form of +3 stars
 
-2. who are accessible:
-   a) profiles are from an individual, not an organization
-   b) GitHub profiles show a method for contacting e.g.e-mail address, personal web site, LinkedIn pages, or Twitter handles
-   c) priority given to profiles with 2 or more relevant repos 
-   d) profiles deprioritized if too many followers or stars
-
-that have relevant skills, but other recruiters haven't seen yet.
+2. tied to suitable profiles:
+   1. profiles are from an individual, not an organization
+   2. shows a method for contacting e.g.e-mail address, personal web site, LinkedIn pages, or Twitter handles
+   3. priority given to profiles with 2 or more relevant repos 
+   4. profiles deprioritized if too many followers or stars (too much competition)
 
 # IV. Screenshots (illustrative, but not comprehensive):
 
