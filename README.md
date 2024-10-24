@@ -47,22 +47,16 @@ In the spirit of practicing for an iterative startup environment that rewards a 
 - Python scripts call different GitHub APIs to ingest data about recently updated repos and their owners' profiles.
 - __Google Cloud Run__ executes said scripts
 - __Google Cloud Secret Manager__ stores API authentication keys and database credentials
-<br>
 
-### Storage
+#### Storage
 __Google Cloud SQL__ runs a Postgres database
-<br>
-### Transformation
-SQL scripts read repo information out of database, transform the data with lead-scoring, and creates a list of repo owners/authors to approach.   
-<br>
-### Load/Data Visualization
-In current rendition, loads grids for:
-* which profiles a recruiter might chase 
 
-### Automation 
+#### Transformation + data visualization
+- SQL scripts read repo information out of database, transform the data with lead-scoring, and creates a list of repo owners/authors to approach.
+- In current rendition, loads grids (see screenshots below)
+
+#### Automation 
 Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule and handle transient failures
-<br>
-
 
 # IV. Screenshots (illustrative, but not comprehensive):
 
