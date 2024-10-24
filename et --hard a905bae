@@ -1,0 +1,33 @@
+[33m4cbbe7d[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{0}: pull origin master: Fast-forward
+[33ma905bae[m HEAD@{1}: commit: testing to see if archive folder was removed
+[33m304f68b[m HEAD@{2}: commit: hiding ARCHIVE folder, placing internal tools in separate folder
+[33m041e899[m HEAD@{3}: commit: bolded text to make the captions easier to read
+[33m7b246d3[m HEAD@{4}: commit: made it more obvious where my actual code is
+[33mc02c488[m HEAD@{5}: commit: re organized the messy files
+[33mc0fa68c[m HEAD@{6}: commit: stepped up the communications on the methodology for picking talent
+[33mc958978[m HEAD@{7}: commit: reformatted methodology for finding good candidates
+[33m2dc0543[m HEAD@{8}: commit: removed dead code and newbie comments where I've answered my own questions
+[33m3ce363a[m HEAD@{9}: commit: code AND automation work as planned now
+[33m196dac4[m HEAD@{10}: commit: shows correct git api url, but without incrementing
+[33m9fc474a[m HEAD@{11}: commit: time from 3rd database table of scheduled tasks shows up as a time object
+[33m1cbe608[m HEAD@{12}: commit: connection proven
+[33mf04fa4f[m HEAD@{13}: commit: repo api now formed correctly, but code at line 87 might be a relic to be deleted
+[33m3ead6ac[m HEAD@{14}: commit: ability to call new date time ranges in repo api calls
+[33m2e3174e[m HEAD@{15}: commit: corrected wording over differences in job frequencies in Scheduler
+[33m39ac76d[m HEAD@{16}: commit: screenshot updated for chron jobs in Scheduler
+[33m8d137e0[m HEAD@{17}: commit: fixed images in readme, deleting obsolete ones from github
+[33mfbefa9f[m HEAD@{18}: commit: forgot to filter out any fork'd repos
+[33m5796573[m HEAD@{19}: commit: zoomed in pic of Scheduler
+[33mbfa3cfc[m HEAD@{20}: commit: Scheduler screenshot added
+[33m4cc60f2[m HEAD@{21}: commit: chron job costing explained
+[33m60e8376[m HEAD@{22}: commit: data load screenshot added to readme
+[33m943765e[m HEAD@{23}: commit: SQL loads memorialized
+[33md453614[m HEAD@{24}: commit: linebreaks after image desc
+[33m2bec10e[m HEAD@{25}: commit: brs used
+[33m4f73fd5[m HEAD@{26}: commit: new spaces after pics
+[33mb7e606c[m HEAD@{27}: commit: spacing after screenshots
+[33m61e9c58[m HEAD@{28}: commit: indents fixed in intro
+[33mf2d8c2d[m HEAD@{29}: commit: bullets indented
+[33m91953ec[m HEAD@{30}: commit: readme intro fixed
+[33m56f2903[m HEAD@{31}: commit: most screenshots added
+[33mb2665b0[m HEAD@{32}: commit: readme fleshed out
