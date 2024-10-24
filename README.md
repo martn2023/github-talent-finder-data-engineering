@@ -131,6 +131,7 @@ __Loading search results from some just-for-fun configurations__<br>
 - Totally impractical today, but eventually I could integrate this with an interactive web site where users could select keywords, set their own groupings, and filters. For example, maybe a user wants to see any repo authors with the topic tag "Minecraft"
 - We could add word clustering e.g. a recruiter searches for repos demonstrating "AI" and my tool catches repos with "Artificial Intelligence". Now we need to debate on whether such a generic term should also catch specifics "Machine Learning", "ML", and "computer vision"
 - I don't regret doing this project because it did what it was supposed to do, which was to expose me to a major cloud platform. From a commercial and product-market-fit standpoint, this has questionable value. For a competitive company looking for the best engineers, their process bottleneck is WINNING over applicants, not discovery (based on market interviews with potential users). So this tool might only be useful for recruiters at lesser known operations, but it has no value for the most prestigious orgs.
+- In my v1, I received a lot of criticisms that were rooted in poor documentation on project purpose, scope, and code rationale. This is being fixed now.
 
 
 >**Engineering:**<br>
