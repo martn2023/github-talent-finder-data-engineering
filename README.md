@@ -43,19 +43,19 @@ To achieve this, I built a product that can:
 In the spirit of practicing for an iterative startup environment that rewards a bias for action, I gave myself only 2 labor weeks to learn my first cloud platform and build a brand project for said platform. Deliberate trade-offs were made to prioritize immediate functionality and familiarity with GCP. Longer-term aspects like code extensibility and replication were intentionally left out of scope to ensure a working solution on time.
 
 # IV. What I built: fully cloud-based ETL pipeline on Google Cloud Platform
-#### Extraction
+### Extraction
 - Python scripts call different GitHub APIs to ingest data about recently updated repos and their owners' profiles.
 - __Google Cloud Run__ executes said scripts
 - __Google Cloud Secret Manager__ stores API authentication keys and database credentials
 
-#### Storage
+### Storage
 __Google Cloud SQL__ runs a Postgres database
 
-#### Transformation + data visualization
+### Transformation + data visualization
 - SQL scripts read repo information out of database, transform the data with lead-scoring, and creates a list of repo owners/authors to approach.
 - In current rendition, loads grids (see screenshots below)
 
-#### Automation 
+### Automation 
 Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule and handle transient failures
 
 # IV. Screenshots (illustrative, but not comprehensive):
