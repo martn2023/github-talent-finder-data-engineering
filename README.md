@@ -49,7 +49,7 @@ In the spirit of practicing for an iterative startup environment that rewards a 
 - __Google Cloud Secret Manager__ stores API authentication keys and database credentials
 
 ### Storage
-__Google Cloud SQL__ runs a Postgres database
+Postgres database hosted by __Google Cloud SQL__
 
 ### Transformation + data visualization
 - SQL scripts read repo information out of database, transform the data with lead-scoring, and creates a list of repo owners/authors to approach.
