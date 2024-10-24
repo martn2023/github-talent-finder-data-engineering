@@ -1,3 +1,10 @@
+'''
+Before coding out the product, I wanted to confirm that the data
+source (GitHub) could feed back to me how many more API calls or
+search results I was still permitted at any given moment
+'''
+
+
 import requests
 from config import github_pat  # make sure this contains your GitHub token
 
