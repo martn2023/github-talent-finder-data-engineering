@@ -1,12 +1,16 @@
 # I. High-level context:
 ### Author's background
 I've held leadership roles in numerous VC-backed tech startups, but:
-  - they were all __business__ roles (finance, COO, product)
-  - I have no CS degree
-  - have never undergone a coding bootcamp
+  - they were all __business__ roles (finance, COO, product).
+  - I have no CS degree.
+  - I've never undergone a coding bootcamp.
+  - I've never seen a complex cloud platform before e.g. __GCP__, AWS, or Azure.
+
+### Scoping and tradeoffs
+In the spirit of practicing for an iterative startup environment that rewards a bias for action, I gave myself only 2 labor weeks to learn my first cloud platform and build a project from scratch. Deliberate trade-offs were made to prioritize immediate functionality and familiarity with GCP. Longer-term aspects like code extensibility and replication were intentionally deprioritized to ensure functionality + on-time delivery.
   
 ### Motivation for this project
-- __Prior__ to this project, I had created a localized ETL that ran off my PC, which. It:
+- __Prior__ to this project, I had created a localized ETL that ran off my PC. It:
   - extracted media headlines
   - cleaned and prepared data
   - among many analyses, quantified media headlines' subjectivity and tonality
@@ -23,7 +27,6 @@ I've held leadership roles in numerous VC-backed tech startups, but:
   - scalability
   - integration ease
   - security needed for a continuous data streams
-- This is my first experience with a major cloud platform e.g. __GCP__, AWS, Azure
 
 # II. Product explanation/example use case
 Pretend you are a technical recruiter/HR Manager with some pain points on candidate discovery. Maybe you want someone how knows how to program for the Minecraft game. You want to find software developers who have demonstrated relevant expertise, who aren't receiving too many competing invites, and aren't too hard to contact.
@@ -37,12 +40,9 @@ To achieve this, I built a product that can:
 - Tie the repos to appropriate owners:
   - Not too many followers
   - Has contact info available, e.g. e-mail, Twitter handle, portfolio web site
-- Feed back to the user a list of target GitHub profiles to pursue
+- Output a list of target GitHub profiles to pursue
 
-# III. Scoping and tradeoffs
-In the spirit of practicing for an iterative startup environment that rewards a bias for action, I gave myself only 2 labor weeks to learn my first cloud platform and build a brand project for said platform. Deliberate trade-offs were made to prioritize immediate functionality and familiarity with GCP. Longer-term aspects like code extensibility and replication were intentionally left out of scope to ensure a working solution on time.
-
-# IV. What I built: fully cloud-based ETL pipeline on Google Cloud Platform
+# III. What I built: fully cloud-based ETL pipeline on Google Cloud Platform
 ### Extraction
 - Python scripts call different GitHub APIs to ingest data about recently updated repos and their owners' profiles.
 - __Google Cloud Run__ executes said scripts
