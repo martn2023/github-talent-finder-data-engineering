@@ -1,20 +1,28 @@
-# I. Author's context:
-- While doing 2 data analytics projects, I pulled data local machine on an ad hoc basis. Although the ETL projects successfully retrieved the data, they would lack attributes required in real world settings:
+# I. High-level context:
+### Author's background
+I've held leadership roles in numerous VC-backed tech startups, but:
+  - they were all __business__ roles (finance, COO, product)
+  - I have no CS degree
+  - have never undergone a coding bootcamp
+  
+### Motivation for this project
+- Prior to this project, I had created a localized ETL that ran off my PC. It successfully
+  - extracted media headlines
+  - cleaned and prepared data
+  - among many analyses, quantified media headlines' subjectivity and tonality
+- Although the ETL project successfully completed the task, it was vulnerable in many ways:
+  - ad hoc: data extraction required a human to manually and correctly run a script
+  - unreliable: potential disruptions from power outages or network disconnections
+  - hardware limitation: my personal device has a ceiling on memory, storage, and processing power
+  - isolation: no ability to integrate with other apps or programs
+  - security concerns: no password management or protection from physical theft
+- __This__ data engineering project resolves the above concerns by building a different ETL and __upgrading to a 100% cloud-hosted solution__, now providing:
   - automation
   - reliability
   - scalability
   - integration ease
   - security needed for a continuous data streams
-
-
-- This __data engineering__ project resolves the above concerns by building a different ETL and __upgrading to a 100% cloud-hosted solution__.
-
-
-- This is my first experience with a major cloud platform e.g. AWS, Azure, GCP
-
-
-- The resulting tool helps technical recruiters identify candidates with relevant GitHub repos.
-
+- This is my first experience with a major cloud platform e.g. __GCP__, AWS, Azure
 
 # II. What I built/New tech used:
 ## 1. Fully cloud-based ETL pipeline (80%)
