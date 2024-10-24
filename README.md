@@ -6,10 +6,11 @@ I've held leadership roles in numerous VC-backed tech startups, but:
   - have never undergone a coding bootcamp
   
 ### Motivation for this project
-- Prior to this project, I had created a localized ETL that ran off my PC. It successfully
+- __Prior__ to this project, I had created a localized ETL that ran off my PC, which. It:
   - extracted media headlines
   - cleaned and prepared data
   - among many analyses, quantified media headlines' subjectivity and tonality
+  - presented data in a number of charts, documented in Jupyter notebooks
 - Although the ETL project successfully completed the task, it was vulnerable in many ways:
   - ad hoc: data extraction required a human to manually and correctly run a script
   - unreliable: potential disruptions from power outages or network disconnections
@@ -24,55 +25,44 @@ I've held leadership roles in numerous VC-backed tech startups, but:
   - security needed for a continuous data streams
 - This is my first experience with a major cloud platform e.g. __GCP__, AWS, Azure
 
-# II. What I built/New tech used:
-## 1. Fully cloud-based ETL pipeline (80%)
-### Extraction
-Separate processes each calls different GitHub APIs to ingest data about recently updated repos and their owners' profiles. Runs said scripts in __Google Cloud Run__ instead of a local machine i.e. no downtime from machine crashes, power outages, or internet disruptions.
+# II. Product explanation/example use case
+Pretend you are a technical recruiter/HR Manager with some pain points on candidate discovery. Maybe you want someone how knows how to program for the Minecraft game. You want to find software developers who have demonstrated relevant expertise, who aren't receiving too many competing invites, and aren't too hard to contact.
 
-Stores passwords and API keys in secure and scalable ways using __Google Cloud Secret Manager__ instead of ad hoc environment attributes.
+To achieve this, I built a product that can:
+- Sift through repos on GitHub, looking for relevant markers like:
+  - topic tags including "Minecraft"
+  - proof of ownership: this is 100% written by 1 individual, and not from an org or a forked project
+  - complexity, indicated by size, how long the repo was worked on, and # of commits
+  - some external validation of usefulness and quality, such as a minimum star count of 3
+- Tie the repos to appropriate owners:
+  - Not too many followers
+  - Has contact info available, e.g. e-mail, Twitter handle, portfolio web site
+- Feed back to the user a list of target GitHub profiles to pursue
+
+# III. Scoping and tradeoffs
+In the spirit of practicing for an iterative startup environment that rewards a bias for action, I gave myself only 2 labor weeks to learn my first cloud platform and build a brand project for said platform. Deliberate trade-offs were made to prioritize immediate functionality and familiarity with GCP. Longer-term aspects like code extensibility and replication were intentionally left out of scope to ensure a working solution on time.
+
+# IV. What I built: fully cloud-based ETL pipeline on Google Cloud Platform
+#### Extraction
+- Python scripts call different GitHub APIs to ingest data about recently updated repos and their owners' profiles.
+- __Google Cloud Run__ executes said scripts
+- __Google Cloud Secret Manager__ stores API authentication keys and database credentials
 <br>
-<br>
+
 ### Storage
-Runs an expandable Postgres database in __Google Cloud SQL__, which is no longer limited by my local machine's disk space.
-
-Database credentials safely stored in __Google Cloud Secret Manager__.
-<br>
+__Google Cloud SQL__ runs a Postgres database
 <br>
 ### Transformation
 SQL scripts read repo information out of database, transform the data with lead-scoring, and creates a list of repo owners/authors to approach.   
 <br>
-<br>
 ### Load/Data Visualization
 In current rendition, loads grids for:
 * which profiles a recruiter might chase 
-* viable contact methods
 
-At scale, will consider __BigQuery__ for larger datasets and __Looker Studio__ for more complex visualizations.
-<br>
-<br>
-
-## 2. Automation (20%)
+### Automation 
 Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule and handle transient failures
 <br>
-<br>
 
-# III. Methodology (illustrative example) for discovering talent:
-Assume the customer is a technical recruiter on the hunt for __Minecraft game developers__.
-
-1. have suitable repos:
-   1. with 1 of 2 signals for topic relevance, either:
-      1. topics tagged should include "minecraft", but most repos don't even have tags 
-      2. Since most repos don't even use manual topic tags, we can look at primary language "mcfunction" as a surefire way to know the repo is focused on Minecraft
-   2. repos are ignored if over 25 topics are tagged, to block repos that are gaming the system or have trouble prioritizing in their communication. Google uses this same threshold for their Careers web site
-   3. The repo has at least 30 commits and a file size of at least 1 megabyte, to show some level of intensity
-   4. Updated within the last 6 months, so we know the skills are fresh
-   5. External validation in the form of +3 stars
-
-2. tied to suitable profiles:
-   1. profiles are from an individual, not an organization
-   2. shows a method for contacting e.g.e-mail address, personal web site, LinkedIn pages, or Twitter handles
-   3. priority given to profiles with 2 or more relevant repos 
-   4. profiles deprioritized if too many followers or stars (too much competition)
 
 # IV. Screenshots (illustrative, but not comprehensive):
 
@@ -141,11 +131,10 @@ __Loading search results from some just-for-fun configurations__<br>
 - I don't regret doing this project because it did what it was supposed to do, which was to expose me to a major cloud platform. From a commercial and product-market-fit standpoint, this has questionable value. For a competitive company looking for the best engineers, their process bottleneck is WINNING over applicants, not discovery (based on market interviews with potential users). So this tool might only be useful for recruiters at lesser known operations, but it has no value for the most prestigious orgs.
 - In my v1, I received a lot of criticisms that were rooted in poor documentation on project purpose, scope, and code rationale. This is being fixed now.
 
-
 >**Engineering:**<br>
 - Functions can and should be refactored to be more segregated and modular. For example, it might make sense to split the first function up across multiple files where one dedicated file is for Secret Manager to retrieve the Personal Authentication token.
 - It was tedious testing out my code inside of GCP because of the delays from re-deploying Cloud Run
-
+- If reproducibility became an issue, we could use containerization like Docker
 
 >**Tools**<br>
 - BigQuery
