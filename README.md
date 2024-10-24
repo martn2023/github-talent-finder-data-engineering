@@ -61,7 +61,7 @@ Uses __Google Cloud Scheduler__ to invoke aforementioned processes on a schedule
 # IV. Screenshots (illustrative, but not comprehensive):
 
 __Wrote scripts to call APIs and extract information about GitHub recently updated repos (search window of 60 seconds) and their owners__<br> 
-![img.png](readme_media/img9.png)
+![img.png](readme_media/script_location.png)
 <br>
 <br>
 <br>
