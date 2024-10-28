@@ -21,7 +21,7 @@ In the spirit of practicing for an iterative startup environment that rewards a 
   - hardware limitation: my personal device has a ceiling on memory, storage, and processing power
   - isolation: no ability to integrate with other apps or programs
   - security concerns: no password management or protection from physical theft
-- __This__ data engineering project resolves the above concerns by building a different ETL and __upgrading to a 100% cloud-hosted solution__, now providing:
+- This data engineering project resolves the above concerns by building a different ETL and __upgrading to a 100% cloud-hosted solution__, now providing:
   - automation
   - reliability
   - scalability
@@ -44,7 +44,7 @@ To achieve this, I built a product that can:
 
 # III. What I built: fully cloud-based ETL pipeline on Google Cloud Platform
 ### Extraction
-- Python scripts call different GitHub APIs to ingest data about recently updated repos and their owners' profiles.
+- Python scripts call different GitHub APIs to ingest data about recently updated repos and their owners' profiles
 - __Google Cloud Run__ executes said scripts
 - __Google Cloud Secret Manager__ stores API authentication keys and database credentials
 
@@ -98,8 +98,6 @@ __Loading search results from some just-for-fun configurations__<br>
 <br>
 <br>
 
-
-
 # V. Learnings:
 - I had to go through 4 different project ideas/data sources before I could find one where I wasn't limited by the scope of data, the volume of hits permitted, and the financial cost
 - I built static web sites in the 1990s when deployment was a lot simpler. Publishing a web site to the web was simplying drag-and-dropping files into an FTP server, so I had trouble envisioning how modern day DevOps was a full-time job. That changed as soon I opened up Google Cloud Platform and started reading the summaries.
@@ -118,18 +116,18 @@ __Loading search results from some just-for-fun configurations__<br>
   - (43,200 - 93 freebies ) / 31 tasks * $0.10 = $ 139.60 credits burned per month, which is unacceptable given my GCP credit allotment was only $300
 
 # VI. Potential improvements:
->**Product/UI:**<br>
+#### Product/UI
 - The priority behind this project was to prove technical feasibility, not product quality or engineering extensibility i.e. get a simple ETL working in the cloud ASAP. Given enough time, I would have had a far more complex lead-scoring system
 - Totally impractical today, but eventually I could integrate this with an interactive web site where users could select keywords, set their own groupings, and filters. For example, maybe a user wants to see any repo authors with the topic tag "Minecraft"
 - We could add word clustering e.g. a recruiter searches for repos demonstrating "AI" and my tool catches repos with "Artificial Intelligence". Now we need to debate on whether such a generic term should also catch specifics "Machine Learning", "ML", and "computer vision"
 - I don't regret doing this project because it did what it was supposed to do, which was to expose me to a major cloud platform. From a commercial and product-market-fit standpoint, this has questionable value. For a competitive company looking for the best engineers, their process bottleneck is WINNING over applicants, not discovery (based on market interviews with potential users). So this tool might only be useful for recruiters at lesser known operations, but it has no value for the most prestigious orgs.
 - In my v1, I received a lot of criticisms that were rooted in poor documentation on project purpose, scope, and code rationale. This is being fixed now.
 
->**Engineering:**<br>
+#### Engineering:
 - Functions can and should be refactored to be more segregated and modular. For example, it might make sense to split the first function up across multiple files where one dedicated file is for Secret Manager to retrieve the Personal Authentication token.
 - It was tedious testing out my code inside of GCP because of the delays from re-deploying Cloud Run
 - If reproducibility became an issue, we could use containerization like Docker
 
->**Tools**<br>
+#### Tools
 - BigQuery
 - Looker Studio (formerly known as GCP Data Studio and not to be confused with Looker BI, which is more enterprise)
