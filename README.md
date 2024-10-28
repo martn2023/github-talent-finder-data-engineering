@@ -29,7 +29,7 @@ In the spirit of practicing for an iterative startup environment that rewards a 
   - security needed for a continuous data streams
 
 # II. Product explanation/example use case
-Pretend you are a technical recruiter/HR Manager with some pain points on candidate discovery. Maybe you want someone how knows how to program for the Minecraft game. You want to find software developers who have demonstrated relevant expertise, who aren't receiving too many competing invites, and aren't too hard to contact.
+Pretend you are a technical recruiter/HR Manager with some pain points on candidate discovery. Maybe you want someone how knows how to program for the Minecraft game. You want to find software developers who have demonstrated relevant expertise, who aren't receiving too many competing invites, and aren't too hard to contact. This project __lays the data engineering foundation for a potentially sophisticated talent recommendation engine in the future__.
 
 To achieve this, I built a product that can:
 - Sift through repos on GitHub, looking for relevant markers like:
